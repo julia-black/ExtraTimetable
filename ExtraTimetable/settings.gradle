@@ -1,0 +1,3 @@
+rootProject.name = 'genetic-algorithms'
+include 'genetic-algorithms'
+project(':genetic-algorithms').projectDir=new File('..//genetic-algorithms')

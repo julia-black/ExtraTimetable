@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="com.github.julia-black.genetic-algorithms.main" target="1.8" />
+      <module name="com.github.julia-black.genetic-algorithms.test" target="1.8" />
+      <module name="com.juliablack.genetic-algorithms.main" target="1.8" />
+      <module name="com.juliablack.genetic-algorithms.test" target="1.8" />
+      <module name="ExtraTimetable_main" target="1.8" />
+      <module name="ExtraTimetable_test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

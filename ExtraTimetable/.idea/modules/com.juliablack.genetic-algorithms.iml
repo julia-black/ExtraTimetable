@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id="genetic-algorithms" external.linked.project.path="$MODULE_DIR$/../../genetic-algorithms" external.root.project.path="$MODULE_DIR$/../../genetic-algorithms" external.system.id="GRADLE" external.system.module.group="com.juliablack" external.system.module.version="1.0" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../genetic-algorithms">
+      <excludeFolder url="file://$MODULE_DIR$/../../genetic-algorithms/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/../../genetic-algorithms/build" />
+      <excludeFolder url="file://$MODULE_DIR$/../../genetic-algorithms/out" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

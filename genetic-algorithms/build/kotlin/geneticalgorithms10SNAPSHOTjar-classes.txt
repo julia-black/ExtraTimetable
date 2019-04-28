@@ -1,0 +1,1 @@
+C:\Users\Julia\IdeaProjects\genetic-algorithms\build\classes\kotlin\main\org\MainKt.class;C:\Users\Julia\IdeaProjects\genetic-algorithms\build\classes\kotlin\main\org\TestModule.class
