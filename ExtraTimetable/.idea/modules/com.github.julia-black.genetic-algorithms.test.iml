@@ -14,8 +14,8 @@
           <option name="loadBuiltInsFromDependencies" value="true" />
           <option name="friendPaths">
             <array>
-              <option value="$MODULE_DIR$/../../../genetic-algorithms/build/classes/java/main" />
               <option value="$MODULE_DIR$/../../../genetic-algorithms/build/classes/kotlin/main" />
+              <option value="$MODULE_DIR$/../../../genetic-algorithms/build/classes/java/main" />
             </array>
           </option>
           <option name="languageVersion" value="1.3" />

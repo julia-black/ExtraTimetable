@@ -50,15 +50,6 @@ abstract class GeneticAlgorithm {
         }
     }
 
-    /**
-     * Устанавливает начальную популяцию
-     */
-   //fun setStartgetPopulation()(getPopulation(): MutableList<Individual>) {
-   //    this.getPopulation() = getPopulation()
-   //}
-
-   // protected fun getgetPopulation()() = getPopulation()
-
     protected fun removeIndividual(element: Individual) {
         getPopulation().remove(element)
     }

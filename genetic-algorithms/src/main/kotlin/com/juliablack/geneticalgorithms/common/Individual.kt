@@ -15,16 +15,3 @@ interface Individual {
 
     fun getChromosomes() : List<Chromosome>
 }
-
-///**
-// * Особь, в данном слчае - расписание, содержит хромосому (м.б. более одной, но сделаем сначала с одной)
-// */
-//interface Individual {
-//
-//    /**
-//     * Вычислить фитнесс-функцию (приспособления)
-//     */
-//    //fun calculateFitnessFunction()
-//
-//
-//}

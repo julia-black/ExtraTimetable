@@ -15,18 +15,11 @@ class TimetableGeneticAlg : GeneticAlgorithm() {
         this.population = population as MutableList<TimetableIndividual>
     }
 
-    // override fun setStartPopulation(population: MutableList<Individual>) {
-    //     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    // }
-
-    // override fun setStartPopulation(population: MutableList<TimetableIndividual>) {
-
-    // }
-
     //Отбор лучших особей с помощью фитнесс-функции
     override fun generationPopulation() {
 
-    }
+        //todo: отобрать
 
+    }
 
 }
