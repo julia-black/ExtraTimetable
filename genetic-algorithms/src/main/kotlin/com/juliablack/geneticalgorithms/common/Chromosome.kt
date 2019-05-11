@@ -20,5 +20,7 @@ class Chromosome(private val genom: MutableList<Gene>) {
         return list
     }
 
+    fun getGenom() = genom
+
     //fun indexOfGen(gene: Gene): Int = genom.indexOf(gene)
 }

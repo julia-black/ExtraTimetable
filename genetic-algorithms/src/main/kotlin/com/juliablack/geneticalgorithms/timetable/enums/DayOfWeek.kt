@@ -3,7 +3,7 @@ package com.juliablack.geneticalgorithms.timetable.enums
 import java.util.Random
 
 enum class DayOfWeek {
-    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY;
+    MONDAY, TUESDAY, WEDNESDAY; //THURSDAY, FRIDAY, SATURDAY;
 
     companion object {
         fun getRandomDay(): DayOfWeek {

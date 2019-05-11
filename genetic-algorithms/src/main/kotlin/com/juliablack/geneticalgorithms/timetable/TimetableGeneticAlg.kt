@@ -18,8 +18,10 @@ class TimetableGeneticAlg : GeneticAlgorithm() {
     //Отбор лучших особей с помощью фитнесс-функции
     override fun generationPopulation() {
 
-        //todo: отобрать
-
+        population.forEach {
+            it.calculateFitnessFunction()
+        }
+        System.out.println(population.toString())
     }
 
 }

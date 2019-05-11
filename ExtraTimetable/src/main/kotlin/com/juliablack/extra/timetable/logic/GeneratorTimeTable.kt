@@ -9,14 +9,14 @@ import java.util.*
 
 class GeneratorTimeTable {
 
+    var optionalLessonsOfDay: Int? = null
+    var maxLessonsOfDay: Int? = null
+
     private lateinit var rooms: List<ClassRoom>
     private lateinit var lessons: List<Lesson>
     private lateinit var groups: List<Group>
     private lateinit var teachers: List<Teacher>
     private lateinit var studentProgram: List<GroupProgramm>
-
-    private var listClasses: MutableList<StudentClassFull> = mutableListOf()
-
     private var geneticAlgorithm: GeneticAlgorithm
 
     init {
@@ -28,18 +28,20 @@ class GeneratorTimeTable {
      *  Генерация начальных расписаний в количестве count
      */
     fun generateStartPopulation(countIndividual: Int) {
-        //todo:здесь будет составляться первые count раписаний, который будут составляться рандомно (но с учетом мин. требований)
+        maxLessonsOfDay ?: throw Exception("Не задано максимальное количество пар в день")
         val population: MutableList<TimetableIndividual> = mutableListOf()
 
         for (i in 0 until countIndividual) {
             val individual = TimetableIndividual() //особь - одно расписание
+            individual.optionalLessonsOfDay = optionalLessonsOfDay
+            individual.groups = groups
             studentProgram.forEach { groupProgram ->
                 groupProgram.lessons.forEach { lesson, count ->
                     for (j in 0 until count) {
                         val teacher = getTeacher(lesson)
                                 ?: throw Exception("Не найдено преподавателя для предмета $lesson")
-                        val room = getRandomRoom()
-                        val time = getRandomTime(individual, room, 6)
+                        val room = getRandomRoom(lesson)
+                        val time = getRandomTime(individual, room, maxLessonsOfDay!!)
                         individual.addItem(StudentClass(lesson, groupProgram.group, teacher), time, room)
                     }
                 }
@@ -53,7 +55,13 @@ class GeneratorTimeTable {
         it.lessons.contains(lesson)
     }
 
-    private fun getRandomRoom(): ClassRoom = rooms[Random().nextInt(rooms.size)]
+    private fun getRandomRoom(lesson: Lesson): ClassRoom {
+        var room: ClassRoom
+        do {
+            room = rooms[Random().nextInt(rooms.size)]
+        } while (lesson.isNeedComputers && !room.hasComputers)
+        return room
+    }
 
 
     private fun getRandomTime(timeTable: TimetableIndividual, room: ClassRoom, maxCountClasses: Int): Time {
@@ -67,11 +75,10 @@ class GeneratorTimeTable {
     }
 
     private fun isTimeFree(timeTable: TimetableIndividual, time: Time, room: ClassRoom): Boolean {
-        //идем по всем
         timeTable.getClasses().forEach { studentClass ->
             //если в списке аудиторий уже есть такая
             timeTable.getRooms().getIndexes(room).forEachIndexed { indexRoom, _ ->
-                if (timeTable.getTimes().getGen(indexRoom) == time
+                if (timeTable.getTimes().getGen(indexRoom) == time //если время совпадает, значит аудитория в это время занята
                         && timeTable.getClasses()[indexRoom] != studentClass)
                     return false
             }
@@ -84,6 +91,7 @@ class GeneratorTimeTable {
      * Генерация расписания (основной процесс)
      */
     fun generateTimetable() {
+        geneticAlgorithm.generationPopulation()
 
     }
 
@@ -108,14 +116,14 @@ class GeneratorTimeTable {
 
         val classRoom100 = ClassRoom(100, 12, 30, false, true)
         val classRoom101 = ClassRoom(101, 12, 50, false, true)
-        val classRoom222 = ClassRoom(222, 12, 25, true, false)
+        val classRoom222 = ClassRoom(222, 12, 20, true, false)
 
         rooms = listOf(classRoom100, classRoom101, classRoom222)
         groups = listOf(Group(121, 20), Group(122, 23))
 
         studentProgram = listOf(
                 GroupProgramm(groups[0], mapOf(Pair(lesson, 1), Pair(lesson1, 2), Pair(lesson2, 1), Pair(lesson3, 3))),
-                GroupProgramm(groups[1], mapOf(Pair(lesson, 1), Pair(lesson1, 2), Pair(lesson3, 1)))
+                GroupProgramm(groups[1], mapOf(Pair(lesson, 1), Pair(lesson1, 2), Pair(lesson3, 3)))
         )
     }
 }

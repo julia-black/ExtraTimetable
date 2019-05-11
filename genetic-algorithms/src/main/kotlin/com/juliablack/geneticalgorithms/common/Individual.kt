@@ -6,7 +6,7 @@ interface Individual {
     /**
      * Вычислить фитнесс-функцию (приспособления)
      */
-    fun calculateFitnessFunction()
+    fun calculateFitnessFunction() : Int
 
     /**
      * Произвести мутацию, например, поменять какие-то элементы во всех хромососах местами
