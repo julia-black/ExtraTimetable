@@ -1,8 +1,8 @@
-package com.juliablack.geneticalgorithms.timetable
+package com.juliablack.extra.timetable.logic.genetic.timetable
 
-import com.juliablack.geneticalgorithms.common.Chromosome
-import com.juliablack.geneticalgorithms.common.Individual
-import com.juliablack.geneticalgorithms.timetable.enums.DayOfWeek
+import com.juliablack.extra.timetable.logic.genetic.common.Chromosome
+import com.juliablack.extra.timetable.logic.genetic.common.Individual
+import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
 
 /**
  * Особь (расписание). Classes служат индексами в хромосомах
@@ -14,7 +14,7 @@ class TimetableIndividual : Individual {
     private var classes: MutableList<StudentClass>
     private var chromosomes: MutableList<Chromosome>
 
-    private var fitnessFunction: Int? = null
+    var fitnessFunction: Int? = null
 
     constructor() {
         classes = mutableListOf()
@@ -85,11 +85,16 @@ class TimetableIndividual : Individual {
         var count = 0
         //если в списке аудиторий уже есть такая
         getTimes().getGenom().forEachIndexed { index, gene ->
-            if (getClasses()[index].group == group) {
-                (gene as Time).apply {
-                    if (this.dayOfWeek == dayOfWeek)
-                        count++
+            try {
+                if (getClasses()[index].group == group) {
+                    (gene as Time).apply {
+                        if (this.dayOfWeek == dayOfWeek)
+                            count++
+                    }
                 }
+            }
+            catch (e: Exception) {
+                System.out.println("")
             }
         }
         return count
@@ -126,7 +131,7 @@ class TimetableIndividual : Individual {
     fun addItem(studentClass: StudentClass, time: Time, room: ClassRoom) {
         val idx = classes.size
         classes.add(studentClass)
-        getRooms().setGen(room, idx)
-        getTimes().setGen(time, idx)
+        getRooms().addGen(idx, room)
+        getTimes().addGen(idx, time)
     }
 }

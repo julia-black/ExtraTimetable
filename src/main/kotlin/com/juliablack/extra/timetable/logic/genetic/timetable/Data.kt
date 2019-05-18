@@ -1,8 +1,9 @@
-package com.juliablack.geneticalgorithms.timetable
+package com.juliablack.extra.timetable.logic.genetic.timetable
 
-import com.juliablack.geneticalgorithms.common.Gene
-import com.juliablack.geneticalgorithms.timetable.enums.DayOfWeek
-import com.juliablack.geneticalgorithms.timetable.enums.TypeLesson
+import com.juliablack.extra.timetable.logic.genetic.common.Gene
+import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
+import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
+
 
 data class Group(var number: Int, var countStudents: Int)
 

@@ -5,5 +5,5 @@ import tornadofx.*
 
 class EventController : Controller() {
 
-    val generateTimetable: BehaviorSubject<Unit> = BehaviorSubject.create<Unit>()
+    val generateTimetable = BehaviorSubject.create<Unit>()
 }

@@ -1,4 +1,4 @@
-package com.juliablack.geneticalgorithms.timetable.enums
+package com.juliablack.extra.timetable.logic.genetic.timetable.enums
 
 import java.util.Random
 

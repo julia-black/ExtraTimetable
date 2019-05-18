@@ -1,16 +1,15 @@
-package com.juliablack.extra.timetable.logic
+package com.juliablack.extra.timetable.logic.genetic
 
-import com.juliablack.geneticalgorithms.common.GeneticAlgorithm
-import com.juliablack.geneticalgorithms.timetable.*
-import com.juliablack.geneticalgorithms.timetable.enums.DayOfWeek
-import com.juliablack.geneticalgorithms.timetable.enums.TypeLesson
+import com.juliablack.extra.timetable.logic.genetic.common.GeneticAlgorithm
+import com.juliablack.extra.timetable.logic.genetic.timetable.*
+import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
+import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
 import java.util.*
 
 
-class GeneratorTimetable {
-
-    var optionalLessonsOfDay: Int? = null
-    var maxLessonsOfDay: Int? = null
+class GeneratorTimetable(
+        private var optionalLessonsOfDay: Int? = null,
+        private var maxLessonsOfDay: Int? = null) {
 
     private lateinit var rooms: List<ClassRoom>
     private lateinit var lessons: List<Lesson>
@@ -86,11 +85,12 @@ class GeneratorTimetable {
         return true
     }
 
-
     /**
      * Генерация расписания (основной процесс)
      */
     fun generateTimetable() {
+        geneticAlgorithm.generationPopulation()
+        geneticAlgorithm.crossover()
         geneticAlgorithm.generationPopulation()
     }
 

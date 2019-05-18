@@ -1,4 +1,4 @@
-package com.juliablack.geneticalgorithms.common
+package com.juliablack.extra.timetable.logic.genetic.common
 
 
 interface Individual {

@@ -1,4 +1,4 @@
-package com.juliablack.geneticalgorithms.timetable.enums
+package com.juliablack.extra.timetable.logic.genetic.timetable.enums
 
 enum class TypeParameter {
     COUNT_CLASSES, //Количество пар не превышает максимум

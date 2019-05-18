@@ -2,15 +2,12 @@ package com.juliablack.extra.timetable.view
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import com.juliablack.extra.timetable.controller.EventController
-import com.juliablack.extra.timetable.logic.GeneratorTimetable
-import javafx.geometry.Orientation
+import com.juliablack.extra.timetable.logic.genetic.GeneratorTimetable
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.ButtonType.OK
 import javafx.scene.image.Image
 import javafx.scene.layout.BorderPane
-import javafx.scene.paint.Color
-import javafx.scene.text.FontWeight
 import javafx.stage.Stage
 import tornadofx.*
 
@@ -19,7 +16,7 @@ class MainView : View() {
 
     override val root = BorderPane()
 
-   // private val controller: EventController by inject()
+    private val controller: EventController by inject()
 
     init {
         title = "ExtraTimeTable"
@@ -29,22 +26,9 @@ class MainView : View() {
             top = menubar {
                 menu("Расписание") {
                     item("Сгенерировать").apply {
-                        actionEvents().map { Unit }.subscribe {
-                            action {
-                                runAsync {
-                                    updateTitle("Загрузка данных")
-                                    for (i in 1..10) {
-                                        updateMessage("$i...")
-                                        if (i == 5)
-                                            updateTitle("Генерация")
-                                        clickedGenerateTimetable()
-                                        Thread.sleep(200)
-                                        updateProgress(i.toLong(), 10)
-                                    }
-                                }
-                            }
-
-                        }
+                        actionEvents()
+                                .map { Unit }
+                                .subscribe(controller.generateTimetable)
                     }
 
                     item("Alert").apply {
@@ -64,35 +48,39 @@ class MainView : View() {
                 add<ProgressView>()
             }
         }
+        subscribeAllEvent()
     }
 
-    private fun clickedGenerateTimetable() {
+    private fun subscribeAllEvent() {
+        controller.generateTimetable
+                .subscribe {
+                    runAsync {
 
-        val generatorTimeTable = GeneratorTimetable()
-        generatorTimeTable.maxLessonsOfDay = MAX_LESSONS_OF_DAY
-        generatorTimeTable.optionalLessonsOfDay = OPTIONAL_LESSONS_OF_DAY
-        generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION)
-        generatorTimeTable.generateTimetable()
-    }
+                        updateTitle("Загрузка данных")
 
-    class ProgressView : View() {
-        val status: TaskStatus by inject()
+                        val generatorTimeTable = GeneratorTimetable(OPTIONAL_LESSONS_OF_DAY, MAX_LESSONS_OF_DAY)
 
-        override val root = vbox(4) {
-            visibleWhen { status.running }
-            style { borderColor += box(Color.LIGHTGREY, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT) }
-            label(status.title).style { fontWeight = FontWeight.BOLD }
-            hbox(4) {
-                label(status.message)
-                progressbar(status.progress)
-                visibleWhen { status.running }
-            }
-        }
+                       // Thread.sleep(200)
+                        updateProgress(1, 3)
+                        updateTitle("Генерация стартовой популяции")
+
+                        generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION)
+
+                        //Thread.sleep(200)
+                        updateProgress(2, 3)
+                        updateTitle("Генерация расписания.")
+
+                        generatorTimeTable.generateTimetable()
+
+                                // Thread.sleep(200)
+                        updateProgress(3, 3)
+                    }
+                }
     }
 
     companion object {
-        const val COUNT_OF_POPULATION = 1
+        const val COUNT_OF_POPULATION = 100
         const val MAX_LESSONS_OF_DAY = 6 //максимальное количество пар в день
-        const val OPTIONAL_LESSONS_OF_DAY = 3 //желательное количество пар в день
+        const val OPTIONAL_LESSONS_OF_DAY = 4 //желательное количество пар в день
     }
 }
