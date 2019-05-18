@@ -18,11 +18,11 @@ abstract class GeneticAlgorithm {
      */
     fun crossover() {
         //Берется 2 случайных особи
-        val idxIndividual1 = Random.nextInt(0, getPopulation().size - 1)
-        var idxIndividual2 = Random.nextInt(0, getPopulation().size - 1)
+        val idxIndividual1 = Random.nextInt(getPopulation().size - 1)
+        var idxIndividual2 = Random.nextInt(getPopulation().size - 1)
 
         while (idxIndividual1 == idxIndividual2) {
-            idxIndividual2 = Random.nextInt(0, getPopulation().size - 1)
+            idxIndividual2 = Random.nextInt(getPopulation().size - 1)
         }
 
         //Берется случайная позиция гена в хромосоме (локус)

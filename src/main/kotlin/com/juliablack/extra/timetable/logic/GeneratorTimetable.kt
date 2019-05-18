@@ -7,7 +7,7 @@ import com.juliablack.geneticalgorithms.timetable.enums.TypeLesson
 import java.util.*
 
 
-class GeneratorTimeTable {
+class GeneratorTimetable {
 
     var optionalLessonsOfDay: Int? = null
     var maxLessonsOfDay: Int? = null
@@ -92,7 +92,6 @@ class GeneratorTimeTable {
      */
     fun generateTimetable() {
         geneticAlgorithm.generationPopulation()
-
     }
 
     /**

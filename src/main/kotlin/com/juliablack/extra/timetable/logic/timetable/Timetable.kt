@@ -8,9 +8,7 @@ import com.juliablack.geneticalgorithms.timetable.enums.DayOfWeek
  */
 class Timetable {
 
-    private lateinit var timetable: List<GroupTimetable>
-
-    fun getTimetable() = timetable
+    private var timetable: List<GroupTimetable>
 
     constructor(timetable: List<GroupTimetable>) {
         this.timetable = timetable
