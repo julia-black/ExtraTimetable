@@ -100,10 +100,7 @@ class TimetableIndividual : Individual {
         return count
     }
 
-    /**
-     * Получение кол-ва окон у группы
-     */
-    private fun getFullClasses(group: Group): List<StudentClassFull> {
+    fun getFullClasses(group: Group): List<StudentClassFull> {
         val list = mutableListOf<StudentClassFull>()
         getClasses().forEachIndexed { index, studentClass ->
             val studentClassFull = StudentClassFull(studentClass.lesson,

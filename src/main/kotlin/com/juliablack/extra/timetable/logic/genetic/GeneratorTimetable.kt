@@ -37,10 +37,13 @@ class GeneratorTimetable(
             studentProgram.forEach { groupProgram ->
                 groupProgram.lessons.forEach { lesson, count ->
                     for (j in 0 until count) {
+
                         val teacher = getTeacher(lesson)
                                 ?: throw Exception("Не найдено преподавателя для предмета $lesson")
+
                         val room = getRandomRoom(lesson)
-                        val time = getRandomTime(individual, room, maxLessonsOfDay!!)
+                        val time = getRandomTime(individual, room, teacher, maxLessonsOfDay!!)
+
                         individual.addItem(StudentClass(lesson, groupProgram.group, teacher), time, room)
                     }
                 }
@@ -63,16 +66,19 @@ class GeneratorTimetable(
     }
 
 
-    private fun getRandomTime(timeTable: TimetableIndividual, room: ClassRoom, maxCountClasses: Int): Time {
+    private fun getRandomTime(timeTable: TimetableIndividual, room: ClassRoom, teacher: Teacher, maxCountClasses: Int): Time {
         var time: Time
         do {
             val dayOfWeek = DayOfWeek.getRandomDay()
             val numberClass = Random().nextInt(maxCountClasses)
             time = Time(dayOfWeek, numberClass)
-        } while (!isTimeFree(timeTable, time, room))
+        } while (!isTimeFree(timeTable, time, room) && !isTimeOnTeacherFree(timeTable, time, teacher))
         return time
     }
 
+    /**
+     * Проверить, свободно ли время
+     */
     private fun isTimeFree(timeTable: TimetableIndividual, time: Time, room: ClassRoom): Boolean {
         timeTable.getClasses().forEach { studentClass ->
             //если в списке аудиторий уже есть такая
@@ -80,6 +86,17 @@ class GeneratorTimetable(
                 if (timeTable.getTimes().getGen(indexRoom) == time //если время совпадает, значит аудитория в это время занята
                         && timeTable.getClasses()[indexRoom] != studentClass)
                     return false
+            }
+        }
+        return true
+    }
+
+    private fun isTimeOnTeacherFree(timeTable: TimetableIndividual, time: Time, teacher: Teacher): Boolean {
+        groups.forEach { group ->
+            timeTable.getFullClasses(group).find {
+                it.teacher == teacher && it.time == time
+            }?.let {
+                return false
             }
         }
         return true
