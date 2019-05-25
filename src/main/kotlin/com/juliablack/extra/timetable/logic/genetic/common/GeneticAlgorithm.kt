@@ -44,10 +44,6 @@ abstract class GeneticAlgorithm {
                add(child1)
                add(child2)
            }
-
-            if(getPopulation().get(i).getChromosomes()[1].getGenom().size > 13) {
-                System.out.println("")
-            }
         }
     }
 

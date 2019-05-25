@@ -3,6 +3,7 @@ package com.juliablack.extra.timetable.view
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import com.juliablack.extra.timetable.controller.EventController
 import com.juliablack.extra.timetable.logic.genetic.GeneratorTimetable
+import javafx.application.Platform
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.ButtonType.OK
@@ -59,21 +60,26 @@ class MainView : View() {
                         updateTitle("Загрузка данных")
 
                         val generatorTimeTable = GeneratorTimetable(OPTIONAL_LESSONS_OF_DAY, MAX_LESSONS_OF_DAY)
-
-                       // Thread.sleep(200)
                         updateProgress(1, 3)
                         updateTitle("Генерация стартовой популяции")
 
-                        generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION)
+                        try {
+                            generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION)
+                            updateProgress(2, 3)
+                            updateTitle("Генерация расписания.")
 
-                        //Thread.sleep(200)
-                        updateProgress(2, 3)
-                        updateTitle("Генерация расписания.")
+                            generatorTimeTable.generateTimetable()
+                            updateProgress(3, 3)
+                        } catch (e: Exception) {
+                            Platform.runLater {
+                                Alert(AlertType.ERROR, e.message, OK).apply {
+                                    val stage = dialogPane.scene.window as Stage
+                                    stage.icons.add(Image("/app/timetable.png"))
+                                    stage.showAndWait()
+                                }
+                            }
 
-                        generatorTimeTable.generateTimetable()
-
-                                // Thread.sleep(200)
-                        updateProgress(3, 3)
+                        }
                     }
                 }
     }

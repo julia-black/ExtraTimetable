@@ -1,8 +1,10 @@
 package com.juliablack.extra.timetable.logic.genetic.timetable
 
+import com.juliablack.extra.timetable.logic.genetic.GeneratorTimetable
 import com.juliablack.extra.timetable.logic.genetic.common.Chromosome
 import com.juliablack.extra.timetable.logic.genetic.common.Individual
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
+import java.util.*
 
 /**
  * Особь (расписание). Classes служат индексами в хромосомах
@@ -11,21 +13,25 @@ class TimetableIndividual : Individual {
     var optionalLessonsOfDay: Int? = null
     var groups: List<Group>? = null
 
+
     private var classes: MutableList<StudentClass>
     private var chromosomes: MutableList<Chromosome>
+    private var maxLessonOfDay: Int
 
     var fitnessFunction: Int? = null
 
-    constructor() {
+    constructor(maxLessonOfDay: Int) {
         classes = mutableListOf()
         chromosomes = mutableListOf()
         chromosomes.add(Chromosome(mutableListOf()))
         chromosomes.add(Chromosome(mutableListOf()))
+        this.maxLessonOfDay = maxLessonOfDay
     }
 
-    constructor(classes: MutableList<StudentClass>, chromosomes: MutableList<Chromosome>) {
+    constructor(classes: MutableList<StudentClass>, chromosomes: MutableList<Chromosome>, maxLessonOfDay: Int) {
         this.classes = classes
         this.chromosomes = chromosomes
+        this.maxLessonOfDay = maxLessonOfDay
     }
 
     override fun calculateFitnessFunction(): Int {
@@ -36,7 +42,6 @@ class TimetableIndividual : Individual {
         val timetable = Timetable(this)
 
         groups!!.forEach { group ->
-           // val listClasses = getFullClasses(group)
             //Проверка оптимального количества пар в день
             optionalLessonsOfDay?.let { optionalLessonsOfDay ->
                 DayOfWeek.values().forEach {
@@ -69,7 +74,7 @@ class TimetableIndividual : Individual {
      * Получить количество окон в расписании
      * @return Pair<Количество ненужных окон, количество нужных окон>
      */
-    private fun getIntervals(list: List<StudentClassFull>): Pair<Int,Int> {
+    private fun getIntervals(list: List<StudentClassFull>): Pair<Int, Int> {
         val countBadIntervals = 0
         val countGoodIntervals = 0
 
@@ -92,8 +97,7 @@ class TimetableIndividual : Individual {
                             count++
                     }
                 }
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 System.out.println("")
             }
         }
@@ -113,8 +117,18 @@ class TimetableIndividual : Individual {
         return list
     }
 
+    /**
+     * Мутация - рандомный ген выбирается заново.
+     */
     override fun mutation() {
+        //Выыбираем рандомный локус
+        val locus = Random().nextInt(getTimes().getGenom().size)
+        //Генерируем новую пару
+        val studentClass = getClasses()[locus]
 
+        val triple = GeneratorTimetable.generationTriple(studentClass.lesson, studentClass.group, this, maxLessonOfDay)
+        getTimes().setGen(triple.second, locus)
+        getRooms().setGen(triple.third, locus)
     }
 
     override fun getChromosomes() = chromosomes

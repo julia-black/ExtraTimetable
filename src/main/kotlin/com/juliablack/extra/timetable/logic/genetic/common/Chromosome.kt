@@ -25,6 +25,4 @@ class Chromosome(private val genom: MutableList<Gene>) {
     }
 
     fun getGenom() = genom
-
-    //fun indexOfGen(gene: Gene): Int = genom.indexOf(gene)
 }
