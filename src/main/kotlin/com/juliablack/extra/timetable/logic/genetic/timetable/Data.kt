@@ -4,7 +4,6 @@ import com.juliablack.extra.timetable.logic.genetic.common.Gene
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
 
-
 data class Group(var number: Int, var faculty: String, var countStudents: Int)
 
 data class Teacher(
@@ -15,7 +14,7 @@ data class Teacher(
 data class Time(val dayOfWeek: DayOfWeek,
                 val numberClass: Int) : Gene()
 
-data class ClassRoom(var numer: Int,
+data class ClassRoom(var number: Int,
                      var building: Int, //корпус
                      var capacity: Int,
                      var hasComputers: Boolean,

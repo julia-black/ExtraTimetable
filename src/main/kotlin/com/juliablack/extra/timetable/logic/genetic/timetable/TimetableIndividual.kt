@@ -46,9 +46,11 @@ class TimetableIndividual : Individual {
                     if (diff > 0) {
                         result -= diff
                     }
+                    if(getCountLessonsOfDay(group, it) > maxLessonOfDay) {
+                        result--
+                    }
                 }
             }
-            //Проверка окон
         }
         //Проверка аудиторий
         getRooms().getGenom().forEachIndexed { index, gene ->
@@ -66,22 +68,6 @@ class TimetableIndividual : Individual {
         fitnessFunction = result
         return result
     }
-
-    /**
-     * Получить количество окон в расписании
-     * @return Pair<Количество ненужных окон, количество нужных окон>
-     */
-    //private fun getIntervals(list: List<StudentClassFull>): Pair<Int, Int> {
-    //    val countBadIntervals = 0
-    //    val countGoodIntervals = 0
-
-    //    list.forEach {
-    //        DayOfWeek.values().forEach {
-
-    //        }
-    //    }
-    //    return Pair(countBadIntervals, countGoodIntervals)
-    //}
 
     private fun getCountLessonsOfDay(group: Group, dayOfWeek: DayOfWeek): Int {
         var count = 0
@@ -125,7 +111,12 @@ class TimetableIndividual : Individual {
         val oldTime = getTimes().getGen(locus)
         val oldRoom = getRooms().getGen(locus)
         val oldFitness = calculateFitnessFunction()
-        val triple = GeneratorTimetable.generationTriple(studentClass.lesson, studentClass.group, this, maxLessonOfDay)
+        val triple = GeneratorTimetable
+                .generationTriple(
+                        studentClass.lesson,
+                        studentClass.group,
+                        this,
+                        maxLessonOfDay)
         getTimes().setGen(triple.second, locus)
         getRooms().setGen(triple.third, locus)
         if (calculateFitnessFunction() < oldFitness) {

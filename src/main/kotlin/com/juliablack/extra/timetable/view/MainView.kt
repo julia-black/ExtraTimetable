@@ -12,7 +12,6 @@ import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
 import tornadofx.*
 
-
 class MainView : View() {
 
     override val root = BorderPane()
@@ -66,7 +65,7 @@ class MainView : View() {
                         try {
                             generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION)
                             updateProgress(2, 3)
-                            updateTitle("Генерация расписания.")
+                            updateTitle("Генерация расписания")
                             generatorTimeTable.generateTimetable().subscribe {
                                 generatorTimeTable.saveTimetable(it)
                                 Platform.runLater {
