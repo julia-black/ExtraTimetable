@@ -67,8 +67,9 @@ class MainView : View() {
                             generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION)
                             updateProgress(2, 3)
                             updateTitle("Генерация расписания.")
-
-                            generatorTimeTable.generateTimetable()
+                            generatorTimeTable.generateTimetable().subscribe {
+                                 generatorTimeTable.saveTimetable(it)
+                            }
                             updateProgress(3, 3)
                         } catch (e: Exception) {
                             Platform.runLater {

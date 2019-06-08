@@ -65,4 +65,7 @@ abstract class GeneticAlgorithm {
     protected fun addIndividual(element: Individual) {
         getPopulation().add(element)
     }
+
+    abstract fun getBestIndividual(count : Int = 1) : Individual
+
 }

@@ -1,11 +1,12 @@
 package com.juliablack.extra.timetable.logic.genetic
 
+import com.juliablack.extra.timetable.logic.db.Database
 import com.juliablack.extra.timetable.logic.db.DbContract
-import com.juliablack.extra.timetable.logic.db.db
 import com.juliablack.extra.timetable.logic.genetic.common.GeneticAlgorithm
 import com.juliablack.extra.timetable.logic.genetic.timetable.*
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
+import io.reactivex.Observable
 import org.nield.rxkotlinjdbc.select
 import java.util.*
 
@@ -47,24 +48,17 @@ class GeneratorTimetable(
     /**
      * Генерация расписания (основной процесс)
      */
-    fun generateTimetable() {
-        geneticAlgorithm.generationPopulation()
-        geneticAlgorithm.crossover()
-        geneticAlgorithm.mutationAll(0.5) //вероятность мутации
-        geneticAlgorithm.generationPopulation()
-    }
-
-    private fun getTeachers() {
-        db.select("SELECT * FROM ${DbContract.TEACHER_TABLE}")
-                .toObservable { Teacher(it.getInt(DbContract.ID), it.getString(DbContract.NAME), listOf()) }
-                .toList()
-                .subscribe { list ->
-                    teachers = list
-                }
+    fun generateTimetable(): Observable<Timetable> {
+        for (i in 0 until COUNT_CYCLE_ALGORITHM) {
+            geneticAlgorithm.generationPopulation()
+            geneticAlgorithm.crossover()
+            geneticAlgorithm.mutationAll(0.5) //вероятность мутации
+        }
+        return Observable.just(Timetable(geneticAlgorithm.getBestIndividual() as TimetableIndividual))
     }
 
     private fun getGroups() {
-        db.select("SELECT * FROM ${DbContract.GROUP_TABLE}")
+        Database.db.select("SELECT * FROM ${DbContract.GROUP_TABLE}")
                 .toObservable { Group(it.getInt(DbContract.NUMBER_GROUP), it.getString(DbContract.FACULTY), it.getInt(DbContract.COUNT)) }
                 .toList()
                 .subscribe { it ->
@@ -72,10 +66,28 @@ class GeneratorTimetable(
                 }
     }
 
-    private fun getLessons() {
-        db.select("SELECT * FROM ${DbContract.LESSON_TABLE}")
+    private fun getRooms() {
+        Database.db.select("SELECT * FROM ${DbContract.ROOM_TABLE}")
                 .toObservable {
-                    Lesson(it.getString(DbContract.NAME),
+                    ClassRoom(
+                            it.getInt(DbContract.NUMBER),
+                            it.getInt(DbContract.BUILDING),
+                            it.getInt(DbContract.CAPACITY),
+                            it.getInt(DbContract.COUNT_COMPUTERS) > 0,
+                            it.getInt(DbContract.PROJECTOR) == 1
+                    )
+                }
+                .toList()
+                .subscribe { it ->
+                    rooms = it
+                }
+    }
+
+
+    private fun getLessons() {
+        Database.db.select("SELECT * FROM ${DbContract.LESSON_TABLE}")
+                .toObservable {
+                    Lesson(it.getString(DbContract.NAME_LESSON),
                             if (it.getString(DbContract.TYPE_LESSONS) == "Лекция")
                                 TypeLesson.LECTURE
                             else TypeLesson.PRACTICE,
@@ -87,6 +99,68 @@ class GeneratorTimetable(
                 }
     }
 
+    private fun getTeachers() {
+        Database.db.select("SELECT * FROM (${DbContract.TEACHER_TABLE} " +
+                "JOIN ${DbContract.LESSON_TEACHER} USING (${DbContract.ID_TEACHER})) " +
+                "JOIN  ${DbContract.LESSON_TABLE} USING (${DbContract.ID_LESSON})")
+                .toObservable { res ->
+                    val idTeacher = res.getInt(DbContract.ID_TEACHER)
+                    System.out.println(teachers.toString())
+                    teachers.find { teacher -> teacher.id == idTeacher }?.let {
+                        teachers.find { teacher -> teacher.id == idTeacher }?.lessons!!.add(
+                                Lesson(res.getString(DbContract.NAME_LESSON),
+                                        if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
+                                            TypeLesson.LECTURE
+                                        else TypeLesson.PRACTICE,
+                                        res.getInt(DbContract.IS_NEED_COMPUTERS) == 1))
+                        return@toObservable
+                    }
+                    teachers.add(Teacher(res.getInt(DbContract.ID_TEACHER), res.getString(DbContract.NAME), mutableListOf(
+                            Lesson(res.getString(DbContract.NAME_LESSON),
+                                    if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
+                                        TypeLesson.LECTURE
+                                    else TypeLesson.PRACTICE,
+                                    res.getInt(DbContract.IS_NEED_COMPUTERS) == 1))
+                    ))
+                }
+                .toList()
+                .subscribe()
+    }
+
+    private fun getGroupsProgram() {
+        Database.db.select("SELECT * FROM (${DbContract.GROUP_TABLE} " +
+                "JOIN ${DbContract.GROUPS_PROGRAM} USING (${DbContract.ID_GROUP})) " +
+                "JOIN  ${DbContract.LESSON_TABLE} USING (${DbContract.ID_LESSON})")
+                .toObservable { res ->
+                    val group = res.getInt(DbContract.NUMBER_GROUP)
+                    studentProgram.find { it.group.number == group }?.let {
+                        it.lessons[Lesson(res.getString(DbContract.NAME_LESSON),
+                                if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
+                                    TypeLesson.LECTURE
+                                else TypeLesson.PRACTICE,
+                                res.getInt(DbContract.IS_NEED_COMPUTERS) == 1)] =
+                                res.getInt(DbContract.COUNT_IN_WEEK)
+                        return@toObservable
+                    }
+                    val groupProgram = Pair(
+                            Lesson(res.getString(DbContract.NAME_LESSON),
+                                    if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
+                                        TypeLesson.LECTURE
+                                    else TypeLesson.PRACTICE,
+                                    res.getInt(DbContract.IS_NEED_COMPUTERS) == 1),
+                            res.getInt(DbContract.COUNT_IN_WEEK))
+
+                    groups.find { it.number == group }
+                            ?: throw Exception("В таблице групп не найдена группа $group из групповой программы")
+
+                    studentProgram.add(GroupProgramm(groups.find { it.number == group }!!,
+                            mutableMapOf(groupProgram)))
+                }
+                .toList()
+                .subscribe()
+    }
+
+
     /**
      * Загрузка из БД данных для составляения расписания
      */
@@ -94,35 +168,24 @@ class GeneratorTimetable(
         getGroups()
         getLessons()
         getTeachers()
+        getRooms()
+        getGroupsProgram()
+    }
 
-         val lesson = Lesson("Программирование", TypeLesson.LECTURE, false)
-         val lesson1 = Lesson("Программирование", TypeLesson.PRACTICE, true)
-         val lesson2 = Lesson("Анализ данных", TypeLesson.LECTURE, false)
-         val lesson3 = Lesson("Математический анализ", TypeLesson.LECTURE, false)
-         lessons = listOf(lesson, lesson1, lesson2, lesson3)
 
-        val teacher1 = Teacher(0, "Иванов И.И.", listOf(lesson, lesson1))
-        val teacher2 = Teacher(1, "Степанов С.С.", listOf(lesson2))
-        val teacher3 = Teacher(2, "Попова М.В.", listOf(lesson3))
+    fun saveTimetable(timeTable: Timetable) {
 
-          val classRoom100 = ClassRoom(100, 12, 30, false, true)
-          val classRoom101 = ClassRoom(101, 12, 50, false, true)
-          val classRoom222 = ClassRoom(222, 12, 20, true, false)
-
-          rooms = listOf(classRoom100, classRoom101, classRoom222)
-
-          studentProgram = listOf(
-                  GroupProgramm(groups[0], mapOf(Pair(lesson, 1), Pair(lesson1, 2), Pair(lesson2, 1), Pair(lesson3, 3))),
-                  GroupProgramm(groups[1], mapOf(Pair(lesson, 1), Pair(lesson1, 2), Pair(lesson3, 3)))
-          )
     }
 
     companion object {
+
+        const val COUNT_CYCLE_ALGORITHM = 100
+
         private lateinit var rooms: List<ClassRoom>
         private lateinit var lessons: List<Lesson>
         private lateinit var groups: List<Group>
-        private lateinit var teachers: List<Teacher>
-        private lateinit var studentProgram: List<GroupProgramm>
+        private var teachers: MutableList<Teacher> = mutableListOf()
+        private var studentProgram: MutableList<GroupProgramm> = mutableListOf()
 
         fun generationTriple(lesson: Lesson, group: Group, individual: TimetableIndividual, maxLessonsOfDay: Int): Triple<StudentClass, Time, ClassRoom> {
             val teacher = getTeacher(lesson)
@@ -183,4 +246,6 @@ class GeneratorTimetable(
             return true
         }
     }
+
+
 }

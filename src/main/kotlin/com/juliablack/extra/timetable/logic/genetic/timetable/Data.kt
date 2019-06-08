@@ -10,7 +10,7 @@ data class Group(var number: Int, var faculty: String, var countStudents: Int)
 data class Teacher(
         var id : Int,
         var name: String,
-        var lessons: List<Lesson>) //todo: добавить занятость
+        var lessons: MutableList<Lesson> = mutableListOf()) //todo: добавить занятость
 
 data class Time(val dayOfWeek: DayOfWeek,
                 val numberClass: Int) : Gene()
@@ -40,7 +40,7 @@ data class StudentClassFull(var lesson: Lesson,
  * @param lessons - мапа лекций с указанием количества пар в неделю
  */
 data class GroupProgramm(var group: Group,
-                         var lessons: Map<Lesson, Int>)
+                         var lessons: MutableMap<Lesson, Int>)
 
 /**
  * Групповое расписание

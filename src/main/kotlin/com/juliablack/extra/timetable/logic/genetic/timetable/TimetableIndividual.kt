@@ -125,10 +125,16 @@ class TimetableIndividual : Individual {
         val locus = Random().nextInt(getTimes().getGenom().size)
         //Генерируем новую пару
         val studentClass = getClasses()[locus]
-
+        val oldTime = getTimes().getGen(locus)
+        val oldRoom = getRooms().getGen(locus)
+        val oldFitness = calculateFitnessFunction()
         val triple = GeneratorTimetable.generationTriple(studentClass.lesson, studentClass.group, this, maxLessonOfDay)
         getTimes().setGen(triple.second, locus)
         getRooms().setGen(triple.third, locus)
+        if(calculateFitnessFunction() < oldFitness) {
+            getTimes().setGen(oldTime, locus)
+            getRooms().setGen(oldRoom, locus)
+        }
     }
 
     override fun getChromosomes() = chromosomes
