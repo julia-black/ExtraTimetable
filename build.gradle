@@ -50,6 +50,8 @@ dependencies {
 
     testCompile "org.junit.jupiter:junit-jupiter-api:$junit_version"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+
+    implementation 'com.google.code.gson:gson:2.8.2'
 }
 
 mainClassName = "com.juliablack.extra.timetable.app.MyApp"

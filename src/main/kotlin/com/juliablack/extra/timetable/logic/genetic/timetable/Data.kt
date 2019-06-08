@@ -23,7 +23,8 @@ data class ClassRoom(var numer: Int,
 
 data class Lesson(var name: String,
                   var typeLesson: TypeLesson,
-                  var isNeedComputers: Boolean)
+                  var isNeedComputers: Boolean,
+                  var isNeedProjector: Boolean)
 
 data class StudentClass(var lesson: Lesson,
                         var group: Group,

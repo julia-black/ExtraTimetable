@@ -1,5 +1,6 @@
 package com.juliablack.extra.timetable.logic.genetic
 
+import com.google.gson.Gson
 import com.juliablack.extra.timetable.logic.db.Database
 import com.juliablack.extra.timetable.logic.db.DbContract
 import com.juliablack.extra.timetable.logic.genetic.common.GeneticAlgorithm
@@ -8,7 +9,9 @@ import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
 import io.reactivex.Observable
 import org.nield.rxkotlinjdbc.select
+import java.io.PrintWriter
 import java.util.*
+
 
 class GeneratorTimetable(
         private var optionalLessonsOfDay: Int? = null,
@@ -83,7 +86,6 @@ class GeneratorTimetable(
                 }
     }
 
-
     private fun getLessons() {
         Database.db.select("SELECT * FROM ${DbContract.LESSON_TABLE}")
                 .toObservable {
@@ -91,7 +93,8 @@ class GeneratorTimetable(
                             if (it.getString(DbContract.TYPE_LESSONS) == "Лекция")
                                 TypeLesson.LECTURE
                             else TypeLesson.PRACTICE,
-                            it.getInt(DbContract.IS_NEED_COMPUTERS) == 1)
+                            it.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
+                            it.getInt(DbContract.IS_NEED_PROJECTOR) == 1)
                 }
                 .toList()
                 .subscribe { it ->
@@ -112,7 +115,8 @@ class GeneratorTimetable(
                                         if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
                                             TypeLesson.LECTURE
                                         else TypeLesson.PRACTICE,
-                                        res.getInt(DbContract.IS_NEED_COMPUTERS) == 1))
+                                        res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
+                                        res.getInt(DbContract.IS_NEED_PROJECTOR) == 1))
                         return@toObservable
                     }
                     teachers.add(Teacher(res.getInt(DbContract.ID_TEACHER), res.getString(DbContract.NAME), mutableListOf(
@@ -120,8 +124,9 @@ class GeneratorTimetable(
                                     if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
                                         TypeLesson.LECTURE
                                     else TypeLesson.PRACTICE,
-                                    res.getInt(DbContract.IS_NEED_COMPUTERS) == 1))
-                    ))
+                                    res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
+                                    res.getInt(DbContract.IS_NEED_PROJECTOR) == 1)))
+                    )
                 }
                 .toList()
                 .subscribe()
@@ -138,7 +143,8 @@ class GeneratorTimetable(
                                 if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
                                     TypeLesson.LECTURE
                                 else TypeLesson.PRACTICE,
-                                res.getInt(DbContract.IS_NEED_COMPUTERS) == 1)] =
+                                res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
+                                res.getInt(DbContract.IS_NEED_PROJECTOR) == 1)] =
                                 res.getInt(DbContract.COUNT_IN_WEEK)
                         return@toObservable
                     }
@@ -147,7 +153,8 @@ class GeneratorTimetable(
                                     if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
                                         TypeLesson.LECTURE
                                     else TypeLesson.PRACTICE,
-                                    res.getInt(DbContract.IS_NEED_COMPUTERS) == 1),
+                                    res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
+                                    res.getInt(DbContract.IS_NEED_PROJECTOR) == 1),
                             res.getInt(DbContract.COUNT_IN_WEEK))
 
                     groups.find { it.number == group }
@@ -160,7 +167,6 @@ class GeneratorTimetable(
                 .subscribe()
     }
 
-
     /**
      * Загрузка из БД данных для составляения расписания
      */
@@ -172,9 +178,11 @@ class GeneratorTimetable(
         getGroupsProgram()
     }
 
-
     fun saveTimetable(timeTable: Timetable) {
-
+        val jsonTimetable = Gson().toJson(timeTable)
+        PrintWriter("timetable.json", "UTF-8").use { file ->
+            file.write(jsonTimetable)
+        }
     }
 
     companion object {

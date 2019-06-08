@@ -35,11 +35,8 @@ class TimetableIndividual : Individual {
     }
 
     override fun calculateFitnessFunction(): Int {
-        //todo: здесь будут условия, которые должны быть выполнены. за каждое выполненное условие +1
         var result = 0
         groups ?: throw Exception("Не переданы учебные группы")
-
-        val timetable = Timetable(this)
 
         groups!!.forEach { group ->
             //Проверка оптимального количества пар в день
@@ -52,16 +49,16 @@ class TimetableIndividual : Individual {
                 }
             }
             //Проверка окон
-
-
         }
         //Проверка аудиторий
         getRooms().getGenom().forEachIndexed { index, gene ->
             (gene as ClassRoom).apply {
-                //Вместимость
                 val studentClass = getClasses()[index]
-                if (studentClass.group.countStudents > capacity)
-                    result--
+                when {
+                    studentClass.group.countStudents > capacity -> result-- //Вместимость
+                    studentClass.lesson.isNeedComputers && !hasComputers -> result-- //Наличие компьютеров
+                    studentClass.lesson.isNeedProjector && !hasProjector -> result-- //Наличие проектора
+                }
             }
         }
 
@@ -74,17 +71,17 @@ class TimetableIndividual : Individual {
      * Получить количество окон в расписании
      * @return Pair<Количество ненужных окон, количество нужных окон>
      */
-    private fun getIntervals(list: List<StudentClassFull>): Pair<Int, Int> {
-        val countBadIntervals = 0
-        val countGoodIntervals = 0
+    //private fun getIntervals(list: List<StudentClassFull>): Pair<Int, Int> {
+    //    val countBadIntervals = 0
+    //    val countGoodIntervals = 0
 
-        list.forEach {
-            DayOfWeek.values().forEach {
+    //    list.forEach {
+    //        DayOfWeek.values().forEach {
 
-            }
-        }
-        return Pair(countBadIntervals, countGoodIntervals)
-    }
+    //        }
+    //    }
+    //    return Pair(countBadIntervals, countGoodIntervals)
+    //}
 
     private fun getCountLessonsOfDay(group: Group, dayOfWeek: DayOfWeek): Int {
         var count = 0
@@ -131,7 +128,7 @@ class TimetableIndividual : Individual {
         val triple = GeneratorTimetable.generationTriple(studentClass.lesson, studentClass.group, this, maxLessonOfDay)
         getTimes().setGen(triple.second, locus)
         getRooms().setGen(triple.third, locus)
-        if(calculateFitnessFunction() < oldFitness) {
+        if (calculateFitnessFunction() < oldFitness) {
             getTimes().setGen(oldTime, locus)
             getRooms().setGen(oldRoom, locus)
         }

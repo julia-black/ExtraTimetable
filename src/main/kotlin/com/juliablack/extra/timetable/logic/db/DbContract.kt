@@ -22,6 +22,7 @@ object DbContract {
     const val CAPACITY = "CAPACITY"
     const val TYPE_LESSONS = "TYPE_LESSONS"
     const val IS_NEED_COMPUTERS = "IS_NEED_COMPUTERS"
+    const val IS_NEED_PROJECTOR = "IS_NEED_PROJECTOR"
 
     const val NUMBER = "NUMBER"
     const val BUILDING = "BUILDING"
