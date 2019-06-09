@@ -7,7 +7,7 @@ import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
 data class Group(var number: Int, var faculty: String, var countStudents: Int)
 
 data class Teacher(
-        var id : Int,
+        var id: Int,
         var name: String,
         var lessons: MutableList<Lesson> = mutableListOf()) //todo: добавить занятость
 
@@ -46,7 +46,22 @@ data class GroupProgramm(var group: Group,
  * Групповое расписание
  * @param timetable раписание по дням неделям, со списком соотвествий номер пары - пара
  */
+//data class GroupTimetable(var group: Group,
+//                          var timetable: Map<DayOfWeek, List<Triple<Int, ClassRoom, StudentClass>>>)
+
+data class DayClass(var dayOfWeek: DayOfWeek,
+                    var classes: MutableList<SimpleClass>)
+
+data class SimpleClass(var time: Int, //номер пары
+                       var teacherName: String, //ФИО преподователя
+                       var lessonName: String,
+                       var type: String, //Лекия или практика
+                       var room: Int,
+                       var building: Int
+)
+
 data class GroupTimetable(var group: Group,
-                          var timetable: Map<DayOfWeek, List<Triple<Int, ClassRoom, StudentClass>>>)
+                          var list: List<DayClass>)
+
 
 

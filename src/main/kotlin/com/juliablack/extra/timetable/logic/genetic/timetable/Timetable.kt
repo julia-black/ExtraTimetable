@@ -1,13 +1,11 @@
 package com.juliablack.extra.timetable.logic.genetic.timetable
 
-import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
-
 /**
  * Расписание
  */
 class Timetable {
 
-    private var timetable: List<GroupTimetable>
+    var timetable: List<GroupTimetable>
 
     constructor(timetable: List<GroupTimetable>) {
         this.timetable = timetable
@@ -18,49 +16,40 @@ class Timetable {
     }
 
     private fun parseIndividualToTimeTable(individual: TimetableIndividual): List<GroupTimetable> {
-        val list = mutableListOf<GroupTimetable>()
+        val timetable = mutableListOf<GroupTimetable>()
         individual.groups ?: throw Exception("В расписание не передан список групп")
         individual.groups!!.forEach { group ->
-            val map: MutableMap<DayOfWeek, MutableList<Triple<Int, ClassRoom, StudentClass>>> = mutableMapOf()
+            val list = mutableListOf<DayClass>()
             individual.getClasses().forEachIndexed { index, studentClass ->
                 if (studentClass.group == group) {
                     val time = individual.getTimes().getGen(index) as Time
                     val room = individual.getRooms().getGen(index) as ClassRoom
 
-                    if (map[time.dayOfWeek] == null)
-                        map[time.dayOfWeek] = mutableListOf()
-                    map[time.dayOfWeek]!!.add(Triple(time.numberClass, room, studentClass))
+                    if (list.find { it.dayOfWeek == time.dayOfWeek } == null) { //если нет такого дня недели еще
+                        list.add(
+                                DayClass(
+                                        time.dayOfWeek, mutableListOf<SimpleClass>()
+                                ))
+                    }
+                    list.find { it.dayOfWeek == time.dayOfWeek }?.let {
+                        it.classes.add(
+                                SimpleClass(
+                                        time.numberClass,
+                                        studentClass.teacher.name,
+                                        studentClass.lesson.name,
+                                        studentClass.lesson.typeLesson.toString(),
+                                        room.number,
+                                        room.building
+                                ))
+                    }
+                    list.forEach {
+                        it.classes.sortBy { studentClass -> studentClass.time }
+                    }
                 }
+                list.sortBy { it.dayOfWeek }
             }
-            list.add(GroupTimetable(group = group, timetable = map))
+            timetable.add(GroupTimetable(group = group, list = list))
         }
-        return list
+        return timetable
     }
-
-    /**
-     * Преобразовать в особь
-     */
-    //  companion object {
-    //fun parseToIndividual(classes: List<StudentClassFull>): TimetableIndividual {
-
-    //    val genomRooms = mutableListOf<Gene>()
-    //    val genomTime = mutableListOf<Gene>()
-    //    classes.forEach {
-    //        genomRooms.add(it.classRoom)
-    //        genomTime.add(it.time)
-    //    }
-
-    //    val chromosomeRooms = Chromosome(genomRooms)
-    //    val chromosomeTime = Chromosome(genomTime)
-    //    return TimetableIndividual(parseClasses(classes), mutableListOf(chromosomeRooms, chromosomeTime))
-    //}
-
-    //private fun parseClasses(classesFull: List<StudentClassFull>): List<StudentClass> {
-    //    val classes = mutableListOf<StudentClass>()
-    //    classesFull.forEach {
-    //        classes.add(StudentClass(it.lesson, it.group, it.teacher))
-    //    }
-    //    return classes
-    //}
-    // }
 }

@@ -200,7 +200,7 @@ class GeneratorTimetable(
                     ?: throw Exception("Не найдено преподавателя для предмета ${lesson.name}")
 
             val room = getRandomRoom(lesson)
-            val time = getRandomTime(individual, room, teacher, maxLessonsOfDay)
+            val time = getRandomTime(individual, room, teacher, maxLessonsOfDay, group)
             return Triple(StudentClass(lesson, group, teacher), time, room)
         }
 
@@ -217,21 +217,21 @@ class GeneratorTimetable(
         }
 
 
-        private fun getRandomTime(timeTable: TimetableIndividual, room: ClassRoom, teacher: Teacher, maxCountClasses: Int)
+        private fun getRandomTime(timeTable: TimetableIndividual, room: ClassRoom, teacher: Teacher, maxCountClasses: Int, group: Group)
                 : Time {
             var time: Time
             do {
                 val dayOfWeek = DayOfWeek.getRandomDay()
                 val numberClass = Random().nextInt(maxCountClasses)
                 time = Time(dayOfWeek, numberClass)
-            } while (!isTimeFree(timeTable, time, room) && !isTimeOnTeacherFree(timeTable, time, teacher))
+            } while (!isTimeFree(timeTable, time, room, group) && !isTimeOnTeacherFree(timeTable, time, teacher))
             return time
         }
 
         /**
          * Проверить, свободно ли время
          */
-        private fun isTimeFree(timeTable: TimetableIndividual, time: Time, room: ClassRoom): Boolean {
+        private fun isTimeFree(timeTable: TimetableIndividual, time: Time, room: ClassRoom, group: Group): Boolean {
             timeTable.getClasses().forEach { studentClass ->
                 //если в списке аудиторий уже есть такая
                 timeTable.getRooms().getIndexes(room).forEachIndexed { indexRoom, _ ->
@@ -239,6 +239,12 @@ class GeneratorTimetable(
                             && timeTable.getClasses()[indexRoom] != studentClass)
                         return false
                 }
+            }
+            //Проверяем, есть ли в хромосоме времени это время с данной группой
+            timeTable.getTimes().getGenom().forEachIndexed { index, gene ->
+                if (gene == time &&
+                        timeTable.getClasses().get(index).group == group)
+                    return false
             }
             return true
         }

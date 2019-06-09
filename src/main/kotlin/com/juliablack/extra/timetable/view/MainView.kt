@@ -30,16 +30,6 @@ class MainView : View() {
                                 .map { Unit }
                                 .subscribe(controller.generateTimetable)
                     }
-
-                    item("Alert").apply {
-                        actionEvents().subscribe {
-                            Alert(AlertType.INFORMATION, "", OK).apply {
-                                val stage = dialogPane.scene.window as Stage
-                                stage.icons.add(Image("/app/timetable.png"))
-                                stage.showAndWait()
-                            }
-                        }
-                    }
                 }
                 menu("Настройки") {
                 }
