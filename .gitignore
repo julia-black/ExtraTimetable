@@ -62,5 +62,7 @@ gradle-app.setting
 
 /.gradle
 /out
+/build
+/.idea
 
 ExtraTimetable/build/kotlin-build/version.txt
