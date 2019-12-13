@@ -60,128 +60,68 @@ class GeneratorTimetable(
         return Observable.just(Timetable(geneticAlgorithm.getBestIndividual() as TimetableIndividual))
     }
 
-    private fun getGroups() {
-        Database.db.select("SELECT * FROM ${DbContract.GROUP_TABLE}")
-                .toObservable { Group(it.getInt(DbContract.NUMBER_GROUP), it.getString(DbContract.FACULTY), it.getInt(DbContract.COUNT)) }
-                .toList()
-                .subscribe { it ->
-                    groups = it
-                }
-    }
-
-    private fun getRooms() {
-        Database.db.select("SELECT * FROM ${DbContract.ROOM_TABLE}")
-                .toObservable {
-                    ClassRoom(
-                            it.getInt(DbContract.NUMBER),
-                            it.getInt(DbContract.BUILDING),
-                            it.getInt(DbContract.CAPACITY),
-                            it.getInt(DbContract.COUNT_COMPUTERS) > 0,
-                            it.getInt(DbContract.PROJECTOR) == 1
-                    )
-                }
-                .toList()
-                .subscribe { it ->
-                    rooms = it
-                }
-    }
-
-    private fun getLessons() {
-        Database.db.select("SELECT * FROM ${DbContract.LESSON_TABLE}")
-                .toObservable {
-                    Lesson(it.getString(DbContract.NAME_LESSON),
-                            if (it.getString(DbContract.TYPE_LESSONS) == "Лекция")
-                                TypeLesson.LECTURE
-                            else TypeLesson.PRACTICE,
-                            it.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
-                            it.getInt(DbContract.IS_NEED_PROJECTOR) == 1)
-                }
-                .toList()
-                .subscribe { it ->
-                    lessons = it
-                }
-    }
-
-    private fun getTeachers() {
-        Database.db.select("SELECT * FROM (${DbContract.TEACHER_TABLE} " +
-                "JOIN ${DbContract.LESSON_TEACHER} USING (${DbContract.ID_TEACHER})) " +
-                "JOIN  ${DbContract.LESSON_TABLE} USING (${DbContract.ID_LESSON})")
-                .toObservable { res ->
-                    val idTeacher = res.getInt(DbContract.ID_TEACHER)
-                    System.out.println(teachers.toString())
-                    teachers.find { teacher -> teacher.id == idTeacher }?.let {
-                        teachers.find { teacher -> teacher.id == idTeacher }?.lessons!!.add(
-                                Lesson(res.getString(DbContract.NAME_LESSON),
-                                        if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
-                                            TypeLesson.LECTURE
-                                        else TypeLesson.PRACTICE,
-                                        res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
-                                        res.getInt(DbContract.IS_NEED_PROJECTOR) == 1))
-                        return@toObservable
-                    }
-                    teachers.add(Teacher(res.getInt(DbContract.ID_TEACHER), res.getString(DbContract.NAME), mutableListOf(
-                            Lesson(res.getString(DbContract.NAME_LESSON),
-                                    if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
-                                        TypeLesson.LECTURE
-                                    else TypeLesson.PRACTICE,
-                                    res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
-                                    res.getInt(DbContract.IS_NEED_PROJECTOR) == 1)))
-                    )
-                }
-                .toList()
-                .subscribe()
-    }
-
-    private fun getGroupsProgram() {
-        Database.db.select("SELECT * FROM (${DbContract.GROUP_TABLE} " +
-                "JOIN ${DbContract.GROUPS_PROGRAM} USING (${DbContract.ID_GROUP})) " +
-                "JOIN  ${DbContract.LESSON_TABLE} USING (${DbContract.ID_LESSON})")
-                .toObservable { res ->
-                    val group = res.getInt(DbContract.NUMBER_GROUP)
-                    studentProgram.find { it.group.number == group }?.let {
-                        it.lessons[Lesson(res.getString(DbContract.NAME_LESSON),
-                                if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
-                                    TypeLesson.LECTURE
-                                else TypeLesson.PRACTICE,
-                                res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
-                                res.getInt(DbContract.IS_NEED_PROJECTOR) == 1)] =
-                                res.getInt(DbContract.COUNT_IN_WEEK)
-                        return@toObservable
-                    }
-                    val groupProgram = Pair(
-                            Lesson(res.getString(DbContract.NAME_LESSON),
-                                    if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
-                                        TypeLesson.LECTURE
-                                    else TypeLesson.PRACTICE,
-                                    res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
-                                    res.getInt(DbContract.IS_NEED_PROJECTOR) == 1),
-                            res.getInt(DbContract.COUNT_IN_WEEK))
-
-                    groups.find { it.number == group }
-                            ?: throw Exception("В таблице групп не найдена группа $group из групповой программы")
-
-                    studentProgram.add(GroupProgramm(groups.find { it.number == group }!!,
-                            mutableMapOf(groupProgram)))
-                }
-                .toList()
-                .subscribe()
+    fun saveTimetable(timeTable: Timetable) {
+        val jsonTimetable = Gson().toJson(timeTable)
+        PrintWriter("timetable.json", "UTF-8").use { file ->
+            file.write(jsonTimetable)
+        }
     }
 
     /**
      * Загрузка из БД данных для составляения расписания
      */
     private fun downloadTimetableFromDB() {
-        getGroups()
-        getLessons()
-        getTeachers()
-        getRooms()
-        getGroupsProgram()
-    }
+        Database.getGroups().toList().subscribe { it -> groups = it }
+        Database.getLessons().toList().subscribe { it -> lessons = it }
+        Database.getTeachers().subscribe { res ->
+            val idTeacher = res.getInt(DbContract.ID_TEACHER)
+            println(teachers.toString())
+            teachers.find { teacher -> teacher.id == idTeacher }?.let {
+                teachers.find { teacher -> teacher.id == idTeacher }?.lessons!!.add(
+                        Lesson(res.getString(DbContract.NAME_LESSON),
+                                if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
+                                    TypeLesson.LECTURE
+                                else TypeLesson.PRACTICE,
+                                res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
+                                res.getInt(DbContract.IS_NEED_PROJECTOR) == 1))
+                return@subscribe
+            }
+            teachers.add(Teacher(res.getInt(DbContract.ID_TEACHER), res.getString(DbContract.NAME), mutableListOf(
+                    Lesson(res.getString(DbContract.NAME_LESSON),
+                            if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
+                                TypeLesson.LECTURE
+                            else TypeLesson.PRACTICE,
+                            res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
+                            res.getInt(DbContract.IS_NEED_PROJECTOR) == 1)))
+            )
+        }
+        Database.getRooms().toList().subscribe { it -> rooms = it }
+        Database.getGroupsProgram().subscribe { res ->
+            val group = res.getInt(DbContract.NUMBER_GROUP)
+            studentProgram.find { it.group.number == group }?.let {
+                it.lessons[Lesson(res.getString(DbContract.NAME_LESSON),
+                        if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
+                            TypeLesson.LECTURE
+                        else TypeLesson.PRACTICE,
+                        res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
+                        res.getInt(DbContract.IS_NEED_PROJECTOR) == 1)] =
+                        res.getInt(DbContract.COUNT_IN_WEEK)
+                return@subscribe
+            }
+            val groupProgram = Pair(
+                    Lesson(res.getString(DbContract.NAME_LESSON),
+                            if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
+                                TypeLesson.LECTURE
+                            else TypeLesson.PRACTICE,
+                            res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
+                            res.getInt(DbContract.IS_NEED_PROJECTOR) == 1),
+                    res.getInt(DbContract.COUNT_IN_WEEK))
 
-    fun saveTimetable(timeTable: Timetable) {
-        val jsonTimetable = Gson().toJson(timeTable)
-        PrintWriter("timetable.json", "UTF-8").use { file ->
-            file.write(jsonTimetable)
+            groups.find { it.number == group }
+                    ?: throw Exception("В таблице групп не найдена группа $group из групповой программы")
+
+            studentProgram.add(GroupProgramm(groups.find { it.number == group }!!,
+                    mutableMapOf(groupProgram)))
         }
     }
 
@@ -215,7 +155,6 @@ class GeneratorTimetable(
             } while (lesson.isNeedComputers && !room.hasComputers)
             return room
         }
-
 
         private fun getRandomTime(timeTable: TimetableIndividual, room: ClassRoom, teacher: Teacher, maxCountClasses: Int, group: Group)
                 : Time {
@@ -260,6 +199,4 @@ class GeneratorTimetable(
             return true
         }
     }
-
-
 }

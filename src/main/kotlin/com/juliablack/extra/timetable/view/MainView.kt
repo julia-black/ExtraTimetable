@@ -9,6 +9,7 @@ import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.ButtonType.OK
 import javafx.scene.image.Image
 import javafx.scene.layout.BorderPane
+import javafx.stage.FileChooser
 import javafx.stage.Stage
 import tornadofx.*
 
@@ -20,15 +21,26 @@ class MainView : View() {
 
     init {
         title = "ExtraTimeTable"
+        showTopBar()
+        subscribeAllEvent()
+    }
 
+    private fun showTopBar() {
         with(root) {
             setPrefSize(940.0, 610.0)
             top = menubar {
                 menu("Расписание") {
-                    item("Сгенерировать").apply {
-                        actionEvents()
-                                .map { Unit }
-                                .subscribe(controller.generateTimetable)
+                    menu("Сгенерировать"){
+                        item("Из внутренней базы данных").apply {
+                            actionEvents()
+                                    .map { Unit }
+                                    .subscribe(controller.generateTimetable)
+                        }
+                        item("Из Excel-файла").apply {
+                            actionEvents()
+                                    .map { Unit }
+                                    .subscribe(controller.showViewOpenFile)
+                        }
                     }
                 }
                 menu("Настройки") {
@@ -38,7 +50,6 @@ class MainView : View() {
                 add<ProgressView>()
             }
         }
-        subscribeAllEvent()
     }
 
     private fun subscribeAllEvent() {
@@ -78,6 +89,12 @@ class MainView : View() {
 
                         }
                     }
+                }
+
+        controller.showViewOpenFile
+                .subscribe {
+                    val filters = arrayOf(FileChooser.ExtensionFilter("Файлы Excel", "*.xls", ".xlsx"))
+                    val file = chooseFile("Выберите файл", filters, FileChooserMode.Single)
                 }
     }
 
