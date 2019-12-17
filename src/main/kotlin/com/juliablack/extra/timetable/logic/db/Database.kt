@@ -3,7 +3,7 @@ package com.juliablack.extra.timetable.logic.db
 import com.juliablack.extra.timetable.logic.genetic.GeneratorTimetable
 import com.juliablack.extra.timetable.logic.genetic.timetable.ClassRoom
 import com.juliablack.extra.timetable.logic.genetic.timetable.Group
-import com.juliablack.extra.timetable.logic.genetic.timetable.GroupProgramm
+import com.juliablack.extra.timetable.logic.genetic.timetable.GroupProgram
 import com.juliablack.extra.timetable.logic.genetic.timetable.Lesson
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
 import io.reactivex.Observable
@@ -28,7 +28,7 @@ object Database {
                     Lesson(it.getString(DbContract.NAME_LESSON),
                             if (it.getString(DbContract.TYPE_LESSONS) == "Лекция")
                                 TypeLesson.LECTURE
-                            else TypeLesson.PRACTICE,
+                            else TypeLesson.SEMINAR,
                             it.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
                             it.getInt(DbContract.IS_NEED_PROJECTOR) == 1)
                 }

@@ -12,6 +12,7 @@ import javafx.scene.layout.BorderPane
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import tornadofx.*
+import java.io.File
 
 class MainView : View() {
 
@@ -93,8 +94,18 @@ class MainView : View() {
 
         controller.showViewOpenFile
                 .subscribe {
-                    val filters = arrayOf(FileChooser.ExtensionFilter("Файлы Excel", "*.xls", ".xlsx"))
-                    val file = chooseFile("Выберите файл", filters, FileChooserMode.Single)
+                    val filters = arrayOf(FileChooser.ExtensionFilter("Файлы Excel", "*.xls", "*.xlsx"))
+                    val files = chooseFile("Выберите файл", filters)
+                    if (files.isNotEmpty()) {
+                        runAsync {
+                            updateTitle("Загрузка данных")
+                            val generatorTimeTable = GeneratorTimetable(OPTIONAL_LESSONS_OF_DAY, MAX_LESSONS_OF_DAY, files[0])
+                            updateProgress(1, 3)
+                            updateTitle("Генерация стартовой популяции")
+
+                        }
+                    }
+
                 }
     }
 

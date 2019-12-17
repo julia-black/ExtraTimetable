@@ -7,20 +7,26 @@ import com.juliablack.extra.timetable.logic.genetic.common.GeneticAlgorithm
 import com.juliablack.extra.timetable.logic.genetic.timetable.*
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
+import com.juliablack.extra.timetable.util.parseExcel
 import io.reactivex.Observable
-import org.nield.rxkotlinjdbc.select
+import java.io.File
 import java.io.PrintWriter
 import java.util.*
 
 
 class GeneratorTimetable(
-        private var optionalLessonsOfDay: Int? = null,
-        private var maxLessonsOfDay: Int? = null) {
+        private val optionalLessonsOfDay: Int? = null,
+        private val maxLessonsOfDay: Int? = null,
+        private val file: File? = null) {
 
     private var geneticAlgorithm: GeneticAlgorithm
 
     init {
-        downloadTimetableFromDB()
+        if (file == null) {
+            downloadTimetableFromDB()
+        } else {
+            downloadTimetableFromFile(file)
+        }
         geneticAlgorithm = TimetableGeneticAlg()
     }
 
@@ -32,13 +38,13 @@ class GeneratorTimetable(
         val population: MutableList<TimetableIndividual> = mutableListOf()
 
         for (i in 0 until countIndividual) {
-            val individual = TimetableIndividual(maxLessonsOfDay!!) //особь - одно расписание
+            val individual = TimetableIndividual(maxLessonsOfDay) //особь - одно расписание
             individual.optionalLessonsOfDay = optionalLessonsOfDay
             individual.groups = groups
             studentProgram.forEach { groupProgram ->
-                groupProgram.lessons.forEach { lesson, count ->
+                groupProgram.lessons.forEach { (lesson, count) ->
                     for (j in 0 until count) {
-                        val triple = generationTriple(lesson, groupProgram.group, individual, maxLessonsOfDay!!)
+                        val triple = generationTriple(lesson, groupProgram.group, individual, maxLessonsOfDay)
                         individual.addItem(triple.first, triple.second, triple.third)
                     }
                 }
@@ -67,9 +73,6 @@ class GeneratorTimetable(
         }
     }
 
-    /**
-     * Загрузка из БД данных для составляения расписания
-     */
     private fun downloadTimetableFromDB() {
         Database.getGroups().toList().subscribe { it -> groups = it }
         Database.getLessons().toList().subscribe { it -> lessons = it }
@@ -81,7 +84,7 @@ class GeneratorTimetable(
                         Lesson(res.getString(DbContract.NAME_LESSON),
                                 if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
                                     TypeLesson.LECTURE
-                                else TypeLesson.PRACTICE,
+                                else TypeLesson.LABORATORY,
                                 res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
                                 res.getInt(DbContract.IS_NEED_PROJECTOR) == 1))
                 return@subscribe
@@ -90,7 +93,7 @@ class GeneratorTimetable(
                     Lesson(res.getString(DbContract.NAME_LESSON),
                             if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
                                 TypeLesson.LECTURE
-                            else TypeLesson.PRACTICE,
+                            else TypeLesson.LABORATORY,
                             res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
                             res.getInt(DbContract.IS_NEED_PROJECTOR) == 1)))
             )
@@ -102,7 +105,7 @@ class GeneratorTimetable(
                 it.lessons[Lesson(res.getString(DbContract.NAME_LESSON),
                         if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
                             TypeLesson.LECTURE
-                        else TypeLesson.PRACTICE,
+                        else TypeLesson.LABORATORY,
                         res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
                         res.getInt(DbContract.IS_NEED_PROJECTOR) == 1)] =
                         res.getInt(DbContract.COUNT_IN_WEEK)
@@ -112,7 +115,7 @@ class GeneratorTimetable(
                     Lesson(res.getString(DbContract.NAME_LESSON),
                             if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
                                 TypeLesson.LECTURE
-                            else TypeLesson.PRACTICE,
+                            else TypeLesson.LABORATORY,
                             res.getInt(DbContract.IS_NEED_COMPUTERS) == 1,
                             res.getInt(DbContract.IS_NEED_PROJECTOR) == 1),
                     res.getInt(DbContract.COUNT_IN_WEEK))
@@ -120,9 +123,14 @@ class GeneratorTimetable(
             groups.find { it.number == group }
                     ?: throw Exception("В таблице групп не найдена группа $group из групповой программы")
 
-            studentProgram.add(GroupProgramm(groups.find { it.number == group }!!,
+            studentProgram.add(GroupProgram(groups.find { it.number == group }!!,
                     mutableMapOf(groupProgram)))
         }
+    }
+
+    private fun downloadTimetableFromFile(file: File) {
+        file.parseExcel()
+       //file.parseExcel(rooms, lessons, groups, teachers, studentProgram)
     }
 
     companion object {
@@ -133,7 +141,7 @@ class GeneratorTimetable(
         private lateinit var lessons: List<Lesson>
         private lateinit var groups: List<Group>
         private var teachers: MutableList<Teacher> = mutableListOf()
-        private var studentProgram: MutableList<GroupProgramm> = mutableListOf()
+        private var studentProgram: MutableList<GroupProgram> = mutableListOf()
 
         fun generationTriple(lesson: Lesson, group: Group, individual: TimetableIndividual, maxLessonsOfDay: Int): Triple<StudentClass, Time, ClassRoom> {
             val teacher = getTeacher(lesson)

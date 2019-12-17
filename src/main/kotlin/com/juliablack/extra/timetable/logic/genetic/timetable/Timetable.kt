@@ -18,7 +18,7 @@ class Timetable {
     private fun parseIndividualToTimeTable(individual: TimetableIndividual): List<GroupTimetable> {
         val timetable = mutableListOf<GroupTimetable>()
         individual.groups ?: throw Exception("В расписание не передан список групп")
-        individual.groups!!.forEach { group ->
+        individual.groups?.forEach { group ->
             val list = mutableListOf<DayClass>()
             individual.getClasses().forEachIndexed { index, studentClass ->
                 if (studentClass.group == group) {
@@ -28,20 +28,18 @@ class Timetable {
                     if (list.find { it.dayOfWeek == time.dayOfWeek } == null) { //если нет такого дня недели еще
                         list.add(
                                 DayClass(
-                                        time.dayOfWeek, mutableListOf<SimpleClass>()
+                                        time.dayOfWeek, mutableListOf()
                                 ))
                     }
-                    list.find { it.dayOfWeek == time.dayOfWeek }?.let {
-                        it.classes.add(
-                                SimpleClass(
-                                        time.numberClass,
-                                        studentClass.teacher.name,
-                                        studentClass.lesson.name,
-                                        studentClass.lesson.typeLesson.toString(),
-                                        room.number,
-                                        room.building
-                                ))
-                    }
+                    list.find { it.dayOfWeek == time.dayOfWeek }?.classes?.add(
+                            SimpleClass(
+                                    time.numberClass,
+                                    studentClass.teacher.name,
+                                    studentClass.lesson.name,
+                                    studentClass.lesson.typeLesson.toString(),
+                                    room.number,
+                                    room.building
+                            ))
                     list.forEach {
                         it.classes.sortBy { studentClass -> studentClass.time }
                     }

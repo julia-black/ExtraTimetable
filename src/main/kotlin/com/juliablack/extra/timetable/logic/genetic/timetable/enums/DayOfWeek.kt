@@ -7,7 +7,7 @@ enum class DayOfWeek {
 
     companion object {
         fun getRandomDay(): DayOfWeek {
-            return DayOfWeek.values()[Random().nextInt(values().size)]
+            return values()[Random().nextInt(values().size)]
         }
     }
 }
