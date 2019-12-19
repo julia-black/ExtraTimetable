@@ -7,18 +7,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2898d8e1-8f6f-48de-918a-6c3e024eb974" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/util/ParseExtensions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/util/Util.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/app/MyApp.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/app/MyApp.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/db/Database.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/db/Database.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/GeneratorTimetable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/GeneratorTimetable.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/Data.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/Data.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/Timetable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/Timetable.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/enums/DayOfWeek.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/enums/DayOfWeek.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/enums/TypeLesson.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/enums/TypeLesson.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/view/MainView.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/view/MainView.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/util/ParseExtensions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/util/ParseExtensions.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -314,7 +308,14 @@
       <option name="project" value="LOCAL" />
       <updated>1576262052446</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Added parsing Excel file">
+      <created>1576591743773</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1576591743773</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -343,7 +344,8 @@
     <MESSAGE value="Updated gradle &amp; kotlin plugin" />
     <MESSAGE value="Updated .gitignore" />
     <MESSAGE value="Refactored code" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactored code" />
+    <MESSAGE value="Added parsing Excel file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added parsing Excel file" />
   </component>
   <component name="WindowStateProjectService">
     <state x="230" y="196" key="#BuildArtifactsBeforeRunChooser" timestamp="1576326566841">
@@ -366,10 +368,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="0" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1576254741959" />
-    <state x="492" y="215" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1576257507045">
+    <state x="492" y="215" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1576779361263">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="492" y="215" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1576257507045" />
+    <state x="492" y="215" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1576779361263" />
     <state x="423" y="96" key="#com.intellij.ide.macro.MacrosDialog" timestamp="1576329608191">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -394,10 +396,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="370" y="62" key="#com.juliablack.extra.timetable.app.MyApp/0.0.1536.824@0.0.1536.824" timestamp="1576330988074" />
-    <state x="423" y="6" width="971" height="811" key="CommitChangelistDialog2" timestamp="1576262050439">
+    <state x="423" y="6" width="971" height="811" key="CommitChangelistDialog2" timestamp="1576591740571">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="423" y="6" width="971" height="811" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1576262050439" />
+    <state x="423" y="6" width="971" height="811" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1576591740571" />
     <state x="189" y="76" key="DiffContextDialog" timestamp="1576405068916">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -406,38 +408,38 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1576256017198" />
-    <state width="1493" height="240" key="GridCell.Tab.0.bottom" timestamp="1576591675397">
+    <state width="1044" height="265" key="GridCell.Tab.0.bottom" timestamp="1576774648740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="240" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1576591675397" />
-    <state width="1493" height="240" key="GridCell.Tab.0.center" timestamp="1576591675397">
+    <state width="1044" height="265" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1576774648740" />
+    <state width="1044" height="265" key="GridCell.Tab.0.center" timestamp="1576774648740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="240" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1576591675397" />
-    <state width="1493" height="240" key="GridCell.Tab.0.left" timestamp="1576591675397">
+    <state width="1044" height="265" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1576774648740" />
+    <state width="1044" height="265" key="GridCell.Tab.0.left" timestamp="1576774648740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="240" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1576591675397" />
-    <state width="1493" height="240" key="GridCell.Tab.0.right" timestamp="1576591675397">
+    <state width="1044" height="265" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1576774648740" />
+    <state width="1044" height="265" key="GridCell.Tab.0.right" timestamp="1576774648740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="240" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1576591675397" />
-    <state width="1493" height="240" key="GridCell.Tab.1.bottom" timestamp="1576591675397">
+    <state width="1044" height="265" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1576774648740" />
+    <state width="1044" height="265" key="GridCell.Tab.1.bottom" timestamp="1576774648740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="240" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1576591675397" />
-    <state width="1493" height="240" key="GridCell.Tab.1.center" timestamp="1576591675397">
+    <state width="1044" height="265" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1576774648740" />
+    <state width="1044" height="265" key="GridCell.Tab.1.center" timestamp="1576774648740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="240" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1576591675397" />
-    <state width="1493" height="240" key="GridCell.Tab.1.left" timestamp="1576591675397">
+    <state width="1044" height="265" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1576774648740" />
+    <state width="1044" height="265" key="GridCell.Tab.1.left" timestamp="1576774648740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="240" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1576591675397" />
-    <state width="1493" height="240" key="GridCell.Tab.1.right" timestamp="1576591675397">
+    <state width="1044" height="265" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1576774648740" />
+    <state width="1044" height="265" key="GridCell.Tab.1.right" timestamp="1576774648740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="240" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1576591675397" />
+    <state width="1044" height="265" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1576774648740" />
     <state x="535" y="134" key="RollbackChangesDialog" timestamp="1576405069986">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -446,22 +448,22 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="28" y="28" width="941" height="715" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1576329351745" />
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1576262055626">
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1576591749719">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1576262055626" />
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1576591749719" />
     <state x="347" y="281" key="classpath-attribute-editor" timestamp="1576254957566">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="347" y="281" key="classpath-attribute-editor/0.0.1536.824@0.0.1536.824" timestamp="1576254957566" />
-    <state x="470" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1576584358550">
+    <state x="470" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1576773060152">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="470" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1576584358550" />
-    <state x="462" y="17" width="740" height="789" key="find.popup" timestamp="1576403127644">
+    <state x="470" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1576773060152" />
+    <state x="462" y="17" width="740" height="789" key="find.popup" timestamp="1576778256025">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="462" y="17" width="740" height="789" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1576403127644" />
+    <state x="462" y="17" width="740" height="789" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1576778256024" />
     <state x="0" y="12" width="880" height="759" key="new project wizard" timestamp="1576326801613">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -482,43 +484,36 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/GeneratorTimetable.kt</url>
-          <line>150</line>
+          <line>148</line>
           <option name="timeStamp" value="65" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/GeneratorTimetable.kt</url>
-          <line>168</line>
+          <line>166</line>
           <option name="timeStamp" value="66" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/GeneratorTimetable.kt</url>
-          <line>181</line>
+          <line>179</line>
           <option name="timeStamp" value="67" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/GeneratorTimetable.kt</url>
-          <line>184</line>
+          <line>182</line>
           <option name="timeStamp" value="69" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/GeneratorTimetable.kt</url>
-          <line>186</line>
+          <line>184</line>
           <option name="timeStamp" value="70" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/util/ParseExtensions.kt</url>
-          <line>80</line>
+          <line>11</line>
           <option name="timeStamp" value="89" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="Remote">
-        <watch expression="(cell as XSSFCell).rawValue" language="kotlin" custom="import org.apache.poi.xssf.usermodel.XSSFCell" />
-        <watch expression="row.rowNum" language="kotlin" />
-        <watch expression="cell.columnIndex" language="kotlin" />
-      </configuration>
-    </watches-manager>
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />

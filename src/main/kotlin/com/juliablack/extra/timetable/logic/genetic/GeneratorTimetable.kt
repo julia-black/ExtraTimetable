@@ -7,12 +7,11 @@ import com.juliablack.extra.timetable.logic.genetic.common.GeneticAlgorithm
 import com.juliablack.extra.timetable.logic.genetic.timetable.*
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
-import com.juliablack.extra.timetable.util.parseExcel
+import com.juliablack.extra.timetable.util.Util
 import io.reactivex.Observable
 import java.io.File
 import java.io.PrintWriter
 import java.util.*
-
 
 class GeneratorTimetable(
         private val optionalLessonsOfDay: Int? = null,
@@ -129,8 +128,7 @@ class GeneratorTimetable(
     }
 
     private fun downloadTimetableFromFile(file: File) {
-        file.parseExcel()
-       //file.parseExcel(rooms, lessons, groups, teachers, studentProgram)
+        Util.parseExcel(file, lessons, groups, teachers, studentProgram)
     }
 
     companion object {
@@ -190,7 +188,7 @@ class GeneratorTimetable(
             //Проверяем, есть ли в хромосоме времени это время с данной группой
             timeTable.getTimes().getGenom().forEachIndexed { index, gene ->
                 if (gene == time &&
-                        timeTable.getClasses().get(index).group == group)
+                        timeTable.getClasses()[index].group == group)
                     return false
             }
             return true

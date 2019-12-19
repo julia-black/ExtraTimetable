@@ -1,9 +1,7 @@
 package com.juliablack.extra.timetable.logic.db
 
-import com.juliablack.extra.timetable.logic.genetic.GeneratorTimetable
 import com.juliablack.extra.timetable.logic.genetic.timetable.ClassRoom
 import com.juliablack.extra.timetable.logic.genetic.timetable.Group
-import com.juliablack.extra.timetable.logic.genetic.timetable.GroupProgram
 import com.juliablack.extra.timetable.logic.genetic.timetable.Lesson
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
 import io.reactivex.Observable
@@ -19,7 +17,7 @@ object Database {
 
     fun getGroups(): Observable<Group> {
         return db.select("SELECT * FROM ${DbContract.GROUP_TABLE}")
-                .toObservable { Group(it.getInt(DbContract.NUMBER_GROUP), it.getString(DbContract.FACULTY), it.getInt(DbContract.COUNT)) }
+                .toObservable { Group(it.getInt(DbContract.NUMBER_GROUP), it.getInt(DbContract.COUNT)) }
     }
 
     fun getLessons(): Observable<Lesson> {
@@ -38,10 +36,10 @@ object Database {
         return db.select("SELECT * FROM (${DbContract.TEACHER_TABLE} " +
                 "JOIN ${DbContract.LESSON_TEACHER} USING (${DbContract.ID_TEACHER})) " +
                 "JOIN  ${DbContract.LESSON_TABLE} USING (${DbContract.ID_LESSON})")
-                .toObservable { res -> res}
+                .toObservable { res -> res }
     }
 
-    fun getRooms() : Observable<ClassRoom> {
+    fun getRooms(): Observable<ClassRoom> {
         return db.select("SELECT * FROM ${DbContract.ROOM_TABLE}")
                 .toObservable {
                     ClassRoom(
@@ -54,7 +52,7 @@ object Database {
                 }
     }
 
-    fun getGroupsProgram() : Observable<ResultSet> {
+    fun getGroupsProgram(): Observable<ResultSet> {
         return db.select("SELECT * FROM (${DbContract.GROUP_TABLE} " +
                 "JOIN ${DbContract.GROUPS_PROGRAM} USING (${DbContract.ID_GROUP})) " +
                 "JOIN  ${DbContract.LESSON_TABLE} USING (${DbContract.ID_LESSON})")
