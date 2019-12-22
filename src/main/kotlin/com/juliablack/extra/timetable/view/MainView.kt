@@ -12,7 +12,6 @@ import javafx.scene.layout.BorderPane
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import tornadofx.*
-import java.io.File
 
 class MainView : View() {
 
@@ -29,22 +28,34 @@ class MainView : View() {
     private fun showTopBar() {
         with(root) {
             setPrefSize(940.0, 610.0)
-            top = menubar {
-                menu("Расписание") {
-                    menu("Сгенерировать"){
-                        item("Из внутренней базы данных").apply {
-                            actionEvents()
-                                    .map { Unit }
-                                    .subscribe(controller.generateTimetable)
-                        }
-                        item("Из Excel-файла").apply {
-                            actionEvents()
-                                    .map { Unit }
-                                    .subscribe(controller.showViewOpenFile)
+            top {
+                this += menubar {
+                    menu("Расписание") {
+                        menu("Сгенерировать") {
+                            item("Из внутренней базы данных").apply {
+                                actionEvents()
+                                        .map { Unit }
+                                        .subscribe(controller.generateTimetable)
+                            }
+                            item("Из Excel-файла").apply {
+                                actionEvents()
+                                        .map { Unit }
+                                        .subscribe(controller.showViewOpenFile)
+                            }
                         }
                     }
+                    menu("Настройки") {
+                    }
                 }
-                menu("Настройки") {
+            }
+            center {
+                this += borderpane {
+                    center {
+                        imageview("/app/import_file.png") {
+                            fitWidth = 390.0
+                            fitHeight = 250.0
+                        }
+                    }
                 }
             }
             bottom {
