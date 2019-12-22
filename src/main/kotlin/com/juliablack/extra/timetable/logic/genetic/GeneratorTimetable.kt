@@ -97,7 +97,6 @@ class GeneratorTimetable(
                             res.getInt(DbContract.IS_NEED_PROJECTOR) == 1)))
             )
         }
-        Database.getRooms().toList().subscribe { it -> rooms = it }
         Database.getGroupsProgram().subscribe { res ->
             val group = res.getInt(DbContract.NUMBER_GROUP)
             studentProgram.find { it.group.number == group }?.let {
@@ -125,10 +124,16 @@ class GeneratorTimetable(
             studentProgram.add(GroupProgram(groups.find { it.number == group }!!,
                     mutableMapOf(groupProgram)))
         }
+        getRoomsFromDB()
     }
 
     private fun downloadTimetableFromFile(file: File) {
-        Util.parseExcel(file, lessons, groups, teachers, studentProgram)
+        getRoomsFromDB()
+        Util.parseExcel(file) //lessons, groups, teachers, studentProgram)
+    }
+
+    private fun getRoomsFromDB() {
+        Database.getRooms().toList().subscribe { it -> rooms = it }
     }
 
     companion object {

@@ -42,13 +42,6 @@ data class StudentClassFull(var lesson: Lesson,
 data class GroupProgram(var group: Group,
                          var lessons: MutableMap<Lesson, Int>)
 
-/**
- * Групповое расписание
- * @param timetable раписание по дням неделям, со списком соотвествий номер пары - пара
- */
-//data class GroupTimetable(var group: Group,
-//                          var timetable: Map<DayOfWeek, List<Triple<Int, ClassRoom, StudentClass>>>)
-
 data class DayClass(var dayOfWeek: DayOfWeek,
                     var classes: MutableList<SimpleClass>)
 

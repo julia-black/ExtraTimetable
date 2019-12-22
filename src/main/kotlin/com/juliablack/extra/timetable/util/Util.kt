@@ -1,9 +1,9 @@
 package com.juliablack.extra.timetable.util
 
 import com.juliablack.extra.timetable.logic.genetic.timetable.Group
-import com.juliablack.extra.timetable.logic.genetic.timetable.GroupProgram
 import com.juliablack.extra.timetable.logic.genetic.timetable.Lesson
 import com.juliablack.extra.timetable.logic.genetic.timetable.Teacher
+import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.xssf.usermodel.XSSFCell
@@ -11,8 +11,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
 
 object Util {
-    fun parseExcel(file: File, lessons: List<Lesson>, groups: List<Group>,
-                   teachers: List<Teacher>, studentProgram: List<GroupProgram>) {
+    //    fun parseExcel(file: File, lessons: List<Lesson>, groups: List<Group>,
+//                   teachers: List<Teacher>, studentProgram: List<GroupProgram>) {
+    fun parseExcel(file: File, isFirstSemester: Boolean = true) {
         val workbook: Workbook = XSSFWorkbook(file)
         val sheet = workbook.getSheetAt(0)
         val iterator = sheet.rowIterator()
@@ -31,7 +32,7 @@ object Util {
         while (iterator.hasNext()) {
             val row = iterator.next()
             val cells = mutableListOf<String>()
-            row.forEachIndexed { index, cell ->
+            row.forEach { cell ->
                 if (row.rowNum <= idxStartRow) {
                     when (cell.cellType) {
                         CellType.STRING -> {
@@ -86,16 +87,49 @@ object Util {
                     }
                 }
             }
-            if (cells.isNotEmpty()) {
-                table.add(cells)
+            try {
+                if (cells.isNotEmpty() && isCorrectSemester(cells, idxSemester, isFirstSemester) &&
+                        cells.size >= idxTeacher && cells[idxCountInWeek].isNotBlank()) {
+                    table.add(cells)
+                }
+            } catch (e: IndexOutOfBoundsException) {
+                println("")
             }
         }
-        println(table)
+
+        val lesson = parseLessons(table, idxLecture, idxSeminar, idxLaboratory, table.getColumn(idxName))
+        val teachers = parseTeachers(table, idxName, table.getColumn(idxTeacher))
 
         val allGroups = table.getColumn(idxGroup)
 
         val groups = mutableListOf<Group>()
+    }
 
+    private fun parseLessons(table: MutableList<MutableList<String>>, idxLecture: Int, idxSeminar: Int, idxLaboratory: Int,
+                             lessonNames: List<String>): List<Lesson> {
+        var name = ""
+        val lessons = mutableListOf<Lesson>()
+        lessonNames.forEachIndexed { index, str ->
+            if (str.isNotBlank() && !str.contains("//")) {
+                name = str
+            }
+            var type = TypeLesson.LECTURE
+            if (table[index][idxSeminar].isNotBlank()) {
+                type = TypeLesson.SEMINAR
+            } else if (table[index][idxLaboratory].isNotBlank()) {
+                type = TypeLesson.LABORATORY
+            }
+            //todo пока что так, потом придумать как устанавливать эти значения
+            val lesson = Lesson(name, type, isNeedComputers = false, isNeedProjector = false)
+            if (!lessons.containsLesson(lesson)) {
+                lessons.add(lesson)
+            }
+        }
+        return lessons
+    }
+
+    private fun parseTeachers(table: MutableList<MutableList<String>>, idxNameLesson: Int, column: List<String>): List<Teacher> {
+        return listOf()
     }
 
     private fun parseGroups(table: MutableList<MutableList<String>>) {
@@ -104,10 +138,22 @@ object Util {
         //todo придумать как разделять подгруппы одной группы
     }
 
+    private fun isCorrectSemester(cells: MutableList<String>, idxSemester: Int, isFirstSemester: Boolean): Boolean {
+        val regex = Regex("(\\d)")
+        regex.find(cells[idxSemester])?.groupValues?.forEach { semester ->
+            if (semester.toDouble().toInt() % 2 == 1 != isFirstSemester) {
+                return false
+            }
+        }
+        return true
+    }
+
     private fun MutableList<MutableList<String>>.getColumn(idxColumn: Int): List<String> {
         val result = mutableListOf<String>()
         forEach { row ->
-            result.add(row[idxColumn])
+            if (row.size > idxColumn) {
+                result.add(row[idxColumn])
+            }
         }
         return result
     }
