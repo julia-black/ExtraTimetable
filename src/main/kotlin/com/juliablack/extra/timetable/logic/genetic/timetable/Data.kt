@@ -4,7 +4,7 @@ import com.juliablack.extra.timetable.logic.genetic.common.Gene
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
 
-data class Group(var number: Int, var countStudents: Int, var subGroups: List<Group>? = null) //подугрппа - номер 1/2/3
+data class Group(var number: String, var countStudents: Int, var subGroups: MutableList<Group> = mutableListOf()) //подугрппа - номер 1/2/3
 
 data class Teacher(
         var id: Int,

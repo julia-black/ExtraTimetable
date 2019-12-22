@@ -1,5 +1,6 @@
 package com.juliablack.extra.timetable.util
 
+import com.juliablack.extra.timetable.logic.genetic.timetable.Group
 import com.juliablack.extra.timetable.logic.genetic.timetable.Lesson
 
 fun String.containsIgnoreCase(string: String): Boolean =
@@ -13,4 +14,18 @@ fun List<Lesson>.containsLesson(lesson: Lesson): Boolean {
         return true
     }
     return false
+}
+
+fun List<Group>.findGroup(number: String): Int {
+    return this.indexOfFirst { it.number == number }
+}
+
+fun MutableList<MutableList<String>>.getColumn(idxColumn: Int): List<String> {
+    val result = mutableListOf<String>()
+    forEach { row ->
+        if (row.size > idxColumn) {
+            result.add(row[idxColumn])
+        }
+    }
+    return result
 }

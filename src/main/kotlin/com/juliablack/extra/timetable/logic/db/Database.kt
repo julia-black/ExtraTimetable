@@ -17,7 +17,7 @@ object Database {
 
     fun getGroups(): Observable<Group> {
         return db.select("SELECT * FROM ${DbContract.GROUP_TABLE}")
-                .toObservable { Group(it.getInt(DbContract.NUMBER_GROUP), it.getInt(DbContract.COUNT)) }
+                .toObservable { Group(it.getString(DbContract.NUMBER_GROUP), it.getInt(DbContract.COUNT)) }
     }
 
     fun getLessons(): Observable<Lesson> {
