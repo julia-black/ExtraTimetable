@@ -49,7 +49,9 @@ class GeneratorTimetable(
             studentProgram.forEach { groupProgram ->
                 groupProgram.lessons.forEach { (lesson, count) ->
                     for (j in 0 until count) {
-                        val triple = generationTriple(lesson, groupProgram.group, individual, maxLessonsOfDay)
+                        val group = groups.find { it.number == groupProgram.numGroup }
+                                ?: throw Exception("Не удалось найти группу из групповой программы")
+                        val triple = generationTriple(lesson, group, individual, maxLessonsOfDay)
                         individual.addItem(triple.first, triple.second, triple.third)
                     }
                 }
@@ -105,7 +107,7 @@ class GeneratorTimetable(
         }
         Database.getGroupsProgram().subscribe { res ->
             val group = res.getString(DbContract.NUMBER_GROUP)
-            studentProgram.find { it.group.number == group }?.let {
+            studentProgram.find { it.numGroup == group }?.let {
                 it.lessons[Lesson(res.getString(DbContract.NAME_LESSON),
                         if (res.getString(DbContract.TYPE_LESSONS) == "Лекция")
                             TypeLesson.LECTURE
@@ -127,17 +129,18 @@ class GeneratorTimetable(
             groups.find { it.number == group }
                     ?: throw Exception("В таблице групп не найдена группа $group из групповой программы")
 
-            studentProgram.add(GroupProgram(groups.find { it.number == group }!!,
-                    mutableMapOf(groupProgram)))
+            studentProgram.add(GroupProgram(group, mutableMapOf(groupProgram)))
         }
         getRoomsFromDB()
     }
 
+    @Throws(Exception::class)
     private fun downloadTimetableFromFile(file: File) {
         getRoomsFromDB()
         parseExcel(file, isFirstSemester = true) //todo потом сделать настройку
     }
 
+    @Throws(Exception::class)
     private fun parseExcel(file: File, isFirstSemester: Boolean = true) {
         val workbook: Workbook = XSSFWorkbook(file)
         val sheet = workbook.getSheetAt(0)
@@ -152,7 +155,7 @@ class GeneratorTimetable(
         var idxSeminar = -1
         var idxLaboratory = -1
         var idxCountInWeek = -1
-        var idxTeacher = 16 //todo пока нет названия столбца
+        var idxTeacher = -1
         val table = mutableListOf<MutableList<String>>()
         while (iterator.hasNext()) {
             val row = iterator.next()
@@ -219,9 +222,14 @@ class GeneratorTimetable(
             }
         }
 
-        lessons = Util.parseLessons(table, idxSeminar, idxLaboratory, table.getColumn(idxName))
-        groups = Util.parseGroups(table, idxCountStudentsFree, idxCountStudentsCommerce, table.getColumn(idxGroup))
-        //val teachers = Util.parseTeachers(table, idxName, table.getColumn(idxTeacher))
+        val pair = Util.parseLessonsAndTeachers(table, idxSeminar, idxLaboratory, idxTeacher, table.getColumn(idxName))
+        val lessonWithIdx = pair.first
+        lessons = lessonWithIdx.values.toList()
+        teachers = pair.second
+        val pairGroups = Util.parseGroupsAndProgram(table, idxCountStudentsFree, idxCountStudentsCommerce, idxCountInWeek,
+                table.getColumn(idxGroup), lessonWithIdx)
+        groups = pairGroups.first
+        studentProgram = pairGroups.second
     }
 
     private fun getRoomsFromDB() {

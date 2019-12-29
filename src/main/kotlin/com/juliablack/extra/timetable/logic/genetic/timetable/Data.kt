@@ -39,7 +39,7 @@ data class StudentClassFull(var lesson: Lesson,
  * Учебная программа группы
  * @param lessons - мапа лекций с указанием количества пар в неделю
  */
-data class GroupProgram(var group: Group,
+data class GroupProgram(var numGroup: String,
                          var lessons: MutableMap<Lesson, Int>)
 
 data class DayClass(var dayOfWeek: DayOfWeek,

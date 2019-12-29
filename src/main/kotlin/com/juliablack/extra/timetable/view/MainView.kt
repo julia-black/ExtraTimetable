@@ -71,11 +71,10 @@ class MainView : View() {
 
                         updateTitle("Загрузка данных")
 
-                        val generatorTimeTable = GeneratorTimetable(OPTIONAL_LESSONS_OF_DAY, MAX_LESSONS_OF_DAY)
-                        updateProgress(1, 3)
-                        updateTitle("Генерация стартовой популяции")
-
                         try {
+                            val generatorTimeTable = GeneratorTimetable(OPTIONAL_LESSONS_OF_DAY, MAX_LESSONS_OF_DAY)
+                            updateProgress(1, 3)
+                            updateTitle("Генерация стартовой популяции")
                             generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION)
                             updateProgress(2, 3)
                             updateTitle("Генерация расписания")
