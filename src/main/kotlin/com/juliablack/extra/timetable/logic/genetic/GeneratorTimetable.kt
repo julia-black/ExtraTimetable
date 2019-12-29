@@ -169,13 +169,10 @@ class GeneratorTimetable(
                                     idxSemester = cell.columnIndex
                                 }
                                 cell.stringCellValue.containsIgnoreCase("Бюдж") -> {
-                                    //if (idxCountStudentsFree < 0) {
-                                        idxCountStudentsFree = cell.columnIndex
-                                    //}
+                                    idxCountStudentsFree = cell.columnIndex
                                 }
                                 cell.stringCellValue.containsIgnoreCase("Коммерч") -> {
-                                   // if (idxCountStudentsCommerce < 0)
-                                        idxCountStudentsCommerce = cell.columnIndex
+                                    idxCountStudentsCommerce = cell.columnIndex
                                 }
                                 cell.stringCellValue.containsIgnoreCase("Группа") -> {
                                     idxGroup = cell.columnIndex
@@ -222,7 +219,7 @@ class GeneratorTimetable(
             }
         }
 
-        lessons = Util.parseLessons(table, idxLecture, idxSeminar, idxLaboratory, table.getColumn(idxName))
+        lessons = Util.parseLessons(table, idxSeminar, idxLaboratory, table.getColumn(idxName))
         groups = Util.parseGroups(table, idxCountStudentsFree, idxCountStudentsCommerce, table.getColumn(idxGroup))
         //val teachers = Util.parseTeachers(table, idxName, table.getColumn(idxTeacher))
     }

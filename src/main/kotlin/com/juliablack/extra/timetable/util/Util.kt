@@ -7,7 +7,7 @@ import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
 
 object Util {
 
-    fun parseLessons(table: MutableList<MutableList<String>>, idxLecture: Int, idxSeminar: Int, idxLaboratory: Int,
+    fun parseLessons(table: MutableList<MutableList<String>>, idxSeminar: Int, idxLaboratory: Int,
                      lessonNames: List<String>): List<Lesson> {
         var name = ""
         val lessons = mutableListOf<Lesson>()
@@ -21,8 +21,7 @@ object Util {
             } else if (table[index][idxLaboratory].isNotBlank()) {
                 type = TypeLesson.LABORATORY
             }
-            //todo пока что так, потом придумать как устанавливать эти значения
-            val lesson = Lesson(name, type, isNeedComputers = false, isNeedProjector = false)
+            val lesson = Lesson(name, type, type == TypeLesson.LABORATORY, isNeedProjector = false)
             if (!lessons.containsLesson(lesson)) {
                 lessons.add(lesson)
             }
@@ -84,7 +83,6 @@ object Util {
                 it.countStudents = count
             }
         }
-        //удаляем пары без кол-ва студентов
         result.removeIf { it.countStudents == 0 }
         return result
     }
