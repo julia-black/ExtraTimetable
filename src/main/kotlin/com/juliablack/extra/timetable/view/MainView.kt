@@ -112,7 +112,20 @@ class MainView : View() {
                             val generatorTimeTable = GeneratorTimetable(OPTIONAL_LESSONS_OF_DAY, MAX_LESSONS_OF_DAY, files[0])
                             updateProgress(1, 3)
                             updateTitle("Генерация стартовой популяции")
-
+                            generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION)
+                            updateProgress(2, 3)
+                            updateTitle("Генерация расписания")
+                            generatorTimeTable.generateTimetable().subscribe {
+                                generatorTimeTable.saveTimetable(it)
+                                Platform.runLater {
+                                    Alert(AlertType.INFORMATION, "Расписание timetable.json создано в папке проекта", OK).apply {
+                                        val stage = dialogPane.scene.window as Stage
+                                        stage.icons.add(Image("/app/timetable.png"))
+                                        stage.showAndWait()
+                                    }
+                                }
+                            }
+                            updateProgress(3, 3)
                         }
                     }
 

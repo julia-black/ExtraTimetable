@@ -16,8 +16,12 @@ fun Map<Int, Lesson>.containsLesson(lesson: Lesson): Boolean {
     return false
 }
 
-fun List<Group>.findGroup(number: String): Int {
-    return this.indexOfFirst { it.number == number }
+fun List<Group>.findIdxGroup(number: String): Int {
+    return this.indexOfFirst { it.number == number}
+}
+
+fun List<Group>.findGroup(number: String) : Group? {
+    return find { it.number.contains(number) }
 }
 
 fun Map<Int, Lesson>.findLesson(index: Int): Lesson? {

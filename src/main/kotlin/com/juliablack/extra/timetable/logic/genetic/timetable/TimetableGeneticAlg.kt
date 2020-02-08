@@ -23,13 +23,10 @@ class TimetableGeneticAlg : GeneticAlgorithm() {
         }
         population.sortBy { it.fitnessFunction }
 
-        System.out.println(population.toString())
-
         val count = population.size
         for (i in 0 until count / 2) {
             population.removeAt(0)
         }
-        System.out.println(population.toString())
     }
 
     override fun getBestIndividual(count: Int): Individual {

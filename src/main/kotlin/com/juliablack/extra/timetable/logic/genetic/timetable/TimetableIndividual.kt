@@ -4,6 +4,7 @@ import com.juliablack.extra.timetable.logic.genetic.GeneratorTimetable
 import com.juliablack.extra.timetable.logic.genetic.common.Chromosome
 import com.juliablack.extra.timetable.logic.genetic.common.Individual
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
+import com.juliablack.extra.timetable.util.Util
 import java.util.*
 
 /**
@@ -46,7 +47,7 @@ class TimetableIndividual : Individual {
                     if (diff > 0) {
                         result -= diff
                     }
-                    if(getCountLessonsOfDay(group, it) > maxLessonOfDay) {
+                    if (getCountLessonsOfDay(group, it) > maxLessonOfDay) {
                         result--
                     }
                 }
@@ -138,5 +139,23 @@ class TimetableIndividual : Individual {
         classes.add(studentClass)
         getRooms().addGen(idx, room)
         getTimes().addGen(idx, time)
+    }
+
+    fun getRandomFreeTime(room: ClassRoom, teacher: Teacher, group: Group, groups: List<Group>): Time {
+        val freeTimes = mutableListOf<Time>()
+        DayOfWeek.values().forEach { day ->
+            for (i in 0..maxLessonOfDay) {
+                val time = Time(day, i)
+                if (Util.isTimeFree(this, time, room, group)
+                        && Util.isTimeOnTeacherFree(this, time, teacher, groups)) {
+                    freeTimes.add(time)
+                }
+            }
+        }
+        try {
+            return freeTimes[kotlin.random.Random.nextInt(freeTimes.size)]
+        } catch (e: IllegalArgumentException) {
+            throw Exception("Слишком большое количество предметов. Увеличьте максимальное количество пар в день")
+        }
     }
 }

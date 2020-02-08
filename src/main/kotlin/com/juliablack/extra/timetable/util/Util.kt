@@ -1,9 +1,6 @@
 package com.juliablack.extra.timetable.util
 
-import com.juliablack.extra.timetable.logic.genetic.timetable.Group
-import com.juliablack.extra.timetable.logic.genetic.timetable.GroupProgram
-import com.juliablack.extra.timetable.logic.genetic.timetable.Lesson
-import com.juliablack.extra.timetable.logic.genetic.timetable.Teacher
+import com.juliablack.extra.timetable.logic.genetic.timetable.*
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
 
 object Util {
@@ -30,7 +27,7 @@ object Util {
                 lessons.put(index, lesson)
             }
             //Добавляем преподавателя
-            if (table[index][idxTeacher].isNotBlank()) {
+            if (table[index].size > idxTeacher && table[index][idxTeacher].isNotBlank()) {
                 teacherName = table[index][idxTeacher]
             }
             val idxTeacherInList = teachers.indexOfFirst { it.name == teacherName }
@@ -68,9 +65,9 @@ object Util {
                 countInWeek = table[index][idxCountInWeek].toDouble().toInt()
                 if (numGroup.contains("(")) { //если это подгруппа
                     val groupFull = matchResult.groupValues[1]
-                    val idxThisGroup = resultGroups.findGroup(groupFull)
+                    val idxThisGroup = resultGroups.findIdxGroup(groupFull)
                     if (idxThisGroup != -1) {
-                        if (resultGroups[idxThisGroup].subGroups.findGroup((numGroup)) == -1) {
+                        if (resultGroups[idxThisGroup].subGroups.findIdxGroup((numGroup)) == -1) {
                             resultGroups[idxThisGroup].subGroups.add(Group(numGroup, count))
                         }
                         if (addLessonsInProgram(lessonsWithIdx, index, groupFull, resultProgram, countInWeek, idProgram)) {
@@ -85,7 +82,7 @@ object Util {
                         }
                     }
                 } else {
-                    val idxThisGroup = resultGroups.findGroup(numGroup)
+                    val idxThisGroup = resultGroups.findIdxGroup(numGroup)
                     if (idxThisGroup != -1) { //если такая группа уже добавлена, обновляем кол-во студентов
                         if (count > 0) {
                             resultGroups[idxThisGroup].countStudents = count
@@ -113,12 +110,15 @@ object Util {
             }
         }
         resultGroups.removeIf { it.countStudents == 0 }
+        resultProgram.removeIf { program ->
+            resultGroups.findGroup(program.numGroup) == null
+        }
         return Pair(resultGroups, resultProgram)
     }
 
     private fun addLessonsInProgram(lessonsWithIdx: Map<Int, Lesson>, index: Int, numGroup: String, resultProgram: MutableList<GroupProgram>,
-                            countInWeek: Int, idProgram: Int): Boolean {
-        val lesson = lessonsWithIdx.findLesson(index) ?: throw Exception("Не удалось найти лекцию")
+                                    countInWeek: Int, idProgram: Int): Boolean {
+        val lesson = lessonsWithIdx.findLesson(index) ?: return false
         val idxProgram = resultProgram.indexOfFirst { it.numGroup == numGroup }
         return if (idxProgram != -1) { //Если в программе уже есть эта группа
             resultProgram[idxProgram].lessons[lesson] = countInWeek
@@ -139,5 +139,63 @@ object Util {
             }
         }
         return true
+    }
+
+    /**
+     * Проверить, свободно ли время
+     */
+    fun isTimeFree(timeTable: TimetableIndividual, time: Time, room: ClassRoom, group: Group): Boolean {
+        timeTable.getClasses().forEach { studentClass ->
+            //если в списке аудиторий уже есть такая
+            timeTable.getRooms().getIndexes(room).forEachIndexed { indexRoom, _ ->
+                if (timeTable.getTimes().getGen(indexRoom) == time //если время совпадает, значит аудитория в это время занята
+                        && timeTable.getClasses()[indexRoom] != studentClass)
+                    return false
+            }
+        }
+        //Проверяем, есть ли в хромосоме времени это время с данной группой
+        timeTable.getTimes().getGenom().forEachIndexed { index, gene ->
+            if (gene == time &&
+                    timeTable.getClasses()[index].group == group)
+                return false
+        }
+        return true
+    }
+
+    fun isTimeOnTeacherFree(timeTable: TimetableIndividual, time: Time, teacher: Teacher, groups: List<Group>): Boolean {
+        groups.forEach { group ->
+            timeTable.getFullClasses(group).find {
+                it.teacher == teacher && it.time == time
+            }?.let {
+                return false
+            }
+        }
+        return true
+    }
+
+    fun isErrorTime(list: List<DayClass>): Boolean {
+        if (list.isEmpty() || list[0].classes.isEmpty()) return false
+        var time = Time(list[0].dayOfWeek, list[0].classes[0].time)
+        list.forEach {
+            it.classes.forEachIndexed { idx, elem ->
+                if (idx > 0) {
+                    if (it.dayOfWeek == time.dayOfWeek && elem.time == time.numberClass) {
+                        return true
+                    } else {
+                        time = Time(list[0].dayOfWeek, list[0].classes[0].time)
+                    }
+                }
+            }
+        }
+        return false
+    }
+
+    fun isErrorTime(list: List<DayClass>, time: Time): Boolean {
+        list.find { it.dayOfWeek == time.dayOfWeek }?.classes?.forEach {
+            if (time.numberClass == it.time) {
+                return true
+            }
+        }
+        return false
     }
 }

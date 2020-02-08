@@ -5,10 +5,10 @@ import com.juliablack.extra.timetable.logic.db.Database
 import com.juliablack.extra.timetable.logic.db.DbContract
 import com.juliablack.extra.timetable.logic.genetic.common.GeneticAlgorithm
 import com.juliablack.extra.timetable.logic.genetic.timetable.*
-import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
 import com.juliablack.extra.timetable.util.Util
 import com.juliablack.extra.timetable.util.containsIgnoreCase
+import com.juliablack.extra.timetable.util.findGroup
 import com.juliablack.extra.timetable.util.getColumn
 import io.reactivex.Observable
 import org.apache.poi.ss.usermodel.CellType
@@ -49,7 +49,7 @@ class GeneratorTimetable(
             studentProgram.forEach { groupProgram ->
                 groupProgram.lessons.forEach { (lesson, count) ->
                     for (j in 0 until count) {
-                        val group = groups.find { it.number == groupProgram.numGroup }
+                        val group = groups.findGroup(groupProgram.numGroup)
                                 ?: throw Exception("Не удалось найти группу из групповой программы")
                         val triple = generationTriple(lesson, group, individual, maxLessonsOfDay)
                         individual.addItem(triple.first, triple.second, triple.third)
@@ -142,9 +142,6 @@ class GeneratorTimetable(
 
     @Throws(Exception::class)
     private fun parseExcel(file: File, isFirstSemester: Boolean = true) {
-        val workbook: Workbook = XSSFWorkbook(file)
-        val sheet = workbook.getSheetAt(0)
-        val iterator = sheet.rowIterator()
         var idxStartRow = Int.MAX_VALUE
         var idxName = -1
         var idxSemester = -1
@@ -157,79 +154,88 @@ class GeneratorTimetable(
         var idxCountInWeek = -1
         var idxTeacher = -1
         val table = mutableListOf<MutableList<String>>()
-        while (iterator.hasNext()) {
-            val row = iterator.next()
-            val cells = mutableListOf<String>()
-            row.forEach { cell ->
-                if (row.rowNum <= idxStartRow) {
-                    when (cell.cellType) {
-                        CellType.STRING -> {
-                            when {
-                                cell.stringCellValue.containsIgnoreCase("Наименование дисциплины") -> {
-                                    idxName = cell.columnIndex
-                                }
-                                cell.stringCellValue.containsIgnoreCase("Семестр") -> {
-                                    idxSemester = cell.columnIndex
-                                }
-                                cell.stringCellValue.containsIgnoreCase("Бюдж") -> {
-                                    idxCountStudentsFree = cell.columnIndex
-                                }
-                                cell.stringCellValue.containsIgnoreCase("Коммерч") -> {
-                                    idxCountStudentsCommerce = cell.columnIndex
-                                }
-                                cell.stringCellValue.containsIgnoreCase("Группа") -> {
-                                    idxGroup = cell.columnIndex
-                                }
-                                cell.stringCellValue.containsIgnoreCase("Лекции") -> {
-                                    idxLecture = cell.columnIndex
-                                }
-                                cell.stringCellValue.containsIgnoreCase("Семинар") -> {
-                                    idxSeminar = cell.columnIndex
-                                }
-                                cell.stringCellValue.containsIgnoreCase("Лаборатор") -> {
-                                    idxStartRow = row.rowNum
-                                    idxLaboratory = cell.columnIndex
-                                }
-                                cell.stringCellValue.containsIgnoreCase("Нагрузка в неделю") -> {
-                                    idxCountInWeek = cell.columnIndex
-                                }
-                                cell.stringCellValue.containsIgnoreCase("Преподаватель") -> {
-                                    idxTeacher = cell.columnIndex
+        val workbook: Workbook = XSSFWorkbook(file)
+
+        for (i in 0 until 1) {
+            val sheet = workbook.getSheetAt(i)
+            val iterator = sheet.rowIterator()
+            while (iterator.hasNext()) {
+                val row = iterator.next()
+                val cells = mutableListOf<String>()
+                row.forEach { cell ->
+                    if (row.rowNum <= idxStartRow) {
+                        when (cell.cellType) {
+                            CellType.STRING -> {
+                                when {
+                                    cell.stringCellValue.containsIgnoreCase("Наименование дисциплины") -> {
+                                        idxName = cell.columnIndex
+                                    }
+                                    cell.stringCellValue.containsIgnoreCase("Семестр") -> {
+                                        idxSemester = cell.columnIndex
+                                    }
+                                    cell.stringCellValue.containsIgnoreCase("Бюдж") -> {
+                                        idxCountStudentsFree = cell.columnIndex
+                                    }
+                                    cell.stringCellValue.containsIgnoreCase("Коммерч") -> {
+                                        idxCountStudentsCommerce = cell.columnIndex
+                                    }
+                                    cell.stringCellValue.containsIgnoreCase("Группа") -> {
+                                        idxGroup = cell.columnIndex
+                                    }
+                                    cell.stringCellValue.containsIgnoreCase("Лекции") -> {
+                                        idxLecture = cell.columnIndex
+                                    }
+                                    cell.stringCellValue.containsIgnoreCase("Семинар") -> {
+                                        idxSeminar = cell.columnIndex
+                                    }
+                                    cell.stringCellValue.containsIgnoreCase("Лаборатор") -> {
+                                        idxStartRow = row.rowNum
+                                        idxLaboratory = cell.columnIndex
+                                    }
+                                    cell.stringCellValue.containsIgnoreCase("Нагрузка в неделю") -> {
+                                        idxCountInWeek = cell.columnIndex
+                                    }
+                                    cell.stringCellValue.containsIgnoreCase("Преподаватель") -> {
+                                        idxTeacher = cell.columnIndex
+                                    }
                                 }
                             }
+                            else -> {
+                            }
                         }
-                        else -> {
-                        }
-                    }
-                } else {
-                    when (cell.cellType) {
-                        CellType.STRING -> cells.add(cell.stringCellValue)
-                        CellType.FORMULA -> cells.add((cell as XSSFCell).rawValue)
-                        CellType.NUMERIC -> cells.add(cell.numericCellValue.toString())
-                        CellType.BLANK -> cells.add("")
-                        else -> {
+                    } else {
+                        when (cell.cellType) {
+                            CellType.STRING -> cells.add(cell.stringCellValue)
+                            CellType.FORMULA -> cells.add((cell as XSSFCell).rawValue)
+                            CellType.NUMERIC -> cells.add(cell.numericCellValue.toString())
+                            CellType.BLANK -> cells.add("")
+                            else -> {
+                            }
                         }
                     }
                 }
-            }
-            try {
-                if (cells.isNotEmpty() && Util.isCorrectSemester(cells, idxSemester, isFirstSemester) &&
-                        cells.size >= idxTeacher && cells[idxCountInWeek].isNotBlank()) {
-                    table.add(cells)
+                try {
+                    if (cells.isNotEmpty() && Util.isCorrectSemester(cells, idxSemester, isFirstSemester) &&
+                            cells.size >= idxTeacher && cells[idxCountInWeek].isNotBlank()) {
+                        table.add(cells)
+                    }
+                } catch (e: IndexOutOfBoundsException) {
+                    println("")
                 }
-            } catch (e: IndexOutOfBoundsException) {
-                println("")
             }
+
+
         }
 
         val pair = Util.parseLessonsAndTeachers(table, idxSeminar, idxLaboratory, idxTeacher, table.getColumn(idxName))
         val lessonWithIdx = pair.first
-        lessons = lessonWithIdx.values.toList()
-        teachers = pair.second
+        lessons.addAll(lessonWithIdx.values.toList())
+        teachers.addAll(pair.second)
+
         val pairGroups = Util.parseGroupsAndProgram(table, idxCountStudentsFree, idxCountStudentsCommerce, idxCountInWeek,
                 table.getColumn(idxGroup), lessonWithIdx)
-        groups = pairGroups.first
-        studentProgram = pairGroups.second
+        groups.addAll(pairGroups.first)
+        studentProgram.addAll(pairGroups.second)
     }
 
     private fun getRoomsFromDB() {
@@ -240,9 +246,9 @@ class GeneratorTimetable(
 
         const val COUNT_CYCLE_ALGORITHM = 100
 
-        private lateinit var rooms: List<ClassRoom>
-        private lateinit var lessons: List<Lesson>
-        private lateinit var groups: List<Group>
+        private var rooms: MutableList<ClassRoom> = mutableListOf()
+        private var lessons: MutableList<Lesson> = mutableListOf()
+        private var groups: MutableList<Group> = mutableListOf()
         private var teachers: MutableList<Teacher> = mutableListOf()
         private var studentProgram: MutableList<GroupProgram> = mutableListOf()
 
@@ -251,7 +257,7 @@ class GeneratorTimetable(
                     ?: throw Exception("Не найдено преподавателя для предмета ${lesson.name}")
 
             val room = getRandomRoom(lesson)
-            val time = getRandomTime(individual, room, teacher, maxLessonsOfDay, group)
+            val time = getRandomTime(individual, room, teacher, group)
             return Triple(StudentClass(lesson, group, teacher), time, room)
         }
 
@@ -267,16 +273,8 @@ class GeneratorTimetable(
             return room
         }
 
-        private fun getRandomTime(timeTable: TimetableIndividual, room: ClassRoom, teacher: Teacher, maxCountClasses: Int, group: Group)
-                : Time {
-            var time: Time
-            do {
-                val dayOfWeek = DayOfWeek.getRandomDay()
-                val numberClass = Random().nextInt(maxCountClasses)
-                time = Time(dayOfWeek, numberClass)
-            } while (!isTimeFree(timeTable, time, room, group) && !isTimeOnTeacherFree(timeTable, time, teacher))
-            return time
-        }
+        private fun getRandomTime(timeTable: TimetableIndividual, room: ClassRoom, teacher: Teacher, group: Group): Time =
+                timeTable.getRandomFreeTime(room, teacher, group, groups)
 
         /**
          * Проверить, свободно ли время
@@ -295,17 +293,6 @@ class GeneratorTimetable(
                 if (gene == time &&
                         timeTable.getClasses()[index].group == group)
                     return false
-            }
-            return true
-        }
-
-        private fun isTimeOnTeacherFree(timeTable: TimetableIndividual, time: Time, teacher: Teacher): Boolean {
-            groups.forEach { group ->
-                timeTable.getFullClasses(group).find {
-                    it.teacher == teacher && it.time == time
-                }?.let {
-                    return false
-                }
             }
             return true
         }
