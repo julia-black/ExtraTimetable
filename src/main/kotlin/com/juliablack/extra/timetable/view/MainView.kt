@@ -73,12 +73,17 @@ class MainView : View() {
 
                         try {
                             val generatorTimeTable = GeneratorTimetable(OPTIONAL_LESSONS_OF_DAY, MAX_LESSONS_OF_DAY)
-                            updateProgress(1, 3)
+                            val allProgress = COUNT_OF_POPULATION + GeneratorTimetable.COUNT_CYCLE_ALGORITHM
+                            var progress = 0L
                             updateTitle("Генерация стартовой популяции")
-                            generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION)
-                            updateProgress(2, 3)
+                            generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION) {
+                                updateProgress(progress++, allProgress)
+                            }
                             updateTitle("Генерация расписания")
-                            generatorTimeTable.generateTimetable().subscribe {
+
+                            generatorTimeTable.generateTimetable {
+                                updateProgress(progress++, GeneratorTimetable.COUNT_CYCLE_ALGORITHM)
+                            }.subscribe {
                                 generatorTimeTable.saveTimetable(it)
                                 Platform.runLater {
                                     Alert(AlertType.INFORMATION, "Расписание timetable.json создано в папке проекта", OK).apply {
@@ -88,7 +93,6 @@ class MainView : View() {
                                     }
                                 }
                             }
-                            updateProgress(3, 3)
                         } catch (e: Exception) {
                             Platform.runLater {
                                 Alert(AlertType.ERROR, e.message, OK).apply {
@@ -110,12 +114,17 @@ class MainView : View() {
                         runAsync {
                             updateTitle("Загрузка данных")
                             val generatorTimeTable = GeneratorTimetable(OPTIONAL_LESSONS_OF_DAY, MAX_LESSONS_OF_DAY, files[0])
-                            updateProgress(1, 3)
+                            val allProgress = COUNT_OF_POPULATION + GeneratorTimetable.COUNT_CYCLE_ALGORITHM
+                            var progress = 0L
                             updateTitle("Генерация стартовой популяции")
-                            generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION)
-                            updateProgress(2, 3)
+                            generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION) {
+                                updateProgress(progress++, allProgress)
+                            }
+
                             updateTitle("Генерация расписания")
-                            generatorTimeTable.generateTimetable().subscribe {
+                            generatorTimeTable.generateTimetable {
+                                updateProgress(progress++, GeneratorTimetable.COUNT_CYCLE_ALGORITHM)
+                            }.subscribe {
                                 generatorTimeTable.saveTimetable(it)
                                 Platform.runLater {
                                     Alert(AlertType.INFORMATION, "Расписание timetable.json создано в папке проекта", OK).apply {

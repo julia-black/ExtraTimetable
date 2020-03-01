@@ -38,7 +38,7 @@ class GeneratorTimetable(
     /**
      *  Генерация начальных расписаний в количестве count
      */
-    fun generateStartPopulation(countIndividual: Int) {
+    fun generateStartPopulation(countIndividual: Int, callback: () -> Unit) {
         maxLessonsOfDay ?: throw Exception("Не задано максимальное количество пар в день")
         val population: MutableList<TimetableIndividual> = mutableListOf()
 
@@ -57,6 +57,7 @@ class GeneratorTimetable(
                 }
             }
             population.add(individual)
+            callback.invoke()
         }
         geneticAlgorithm.setStartPopulation(population)
     }
@@ -64,11 +65,12 @@ class GeneratorTimetable(
     /**
      * Генерация расписания (основной процесс)
      */
-    fun generateTimetable(): Observable<Timetable> {
+    fun generateTimetable(callback: () -> Unit): Observable<Timetable> {
         for (i in 0 until COUNT_CYCLE_ALGORITHM) {
             geneticAlgorithm.generationPopulation()
             geneticAlgorithm.crossover()
             geneticAlgorithm.mutationAll(0.5) //вероятность мутации
+            callback.invoke()
         }
         return Observable.just(Timetable(geneticAlgorithm.getBestIndividual() as TimetableIndividual))
     }
@@ -156,7 +158,7 @@ class GeneratorTimetable(
         val table = mutableListOf<MutableList<String>>()
         val workbook: Workbook = XSSFWorkbook(file)
 
-        for (i in 0 until 1) {
+        for (i in 0 until 2) {
             val sheet = workbook.getSheetAt(i)
             val iterator = sheet.rowIterator()
             while (iterator.hasNext()) {
@@ -210,6 +212,7 @@ class GeneratorTimetable(
                             CellType.NUMERIC -> cells.add(cell.numericCellValue.toString())
                             CellType.BLANK -> cells.add("")
                             else -> {
+                                cells.add("")
                             }
                         }
                     }
@@ -223,8 +226,6 @@ class GeneratorTimetable(
                     println("")
                 }
             }
-
-
         }
 
         val pair = Util.parseLessonsAndTeachers(table, idxSeminar, idxLaboratory, idxTeacher, table.getColumn(idxName))
@@ -244,7 +245,7 @@ class GeneratorTimetable(
 
     companion object {
 
-        const val COUNT_CYCLE_ALGORITHM = 100
+        const val COUNT_CYCLE_ALGORITHM = 100L
 
         private var rooms: MutableList<ClassRoom> = mutableListOf()
         private var lessons: MutableList<Lesson> = mutableListOf()

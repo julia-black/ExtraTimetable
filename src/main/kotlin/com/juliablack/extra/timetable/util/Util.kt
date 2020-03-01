@@ -32,7 +32,9 @@ object Util {
             }
             val idxTeacherInList = teachers.indexOfFirst { it.name == teacherName }
             if (idxTeacherInList != -1) { //если такой преподаватель уже записан
-                teachers[idxTeacherInList].lessons.add(lesson) //добавляем ему эту лекцию
+                if (!teachers[idxTeacherInList].lessons.contains(lesson)) {
+                    teachers[idxTeacherInList].lessons.add(lesson) //добавляем ему эту лекцию
+                }
             } else {
                 teachers.add(Teacher(idTeacher, teacherName, mutableListOf(lesson)))
                 idTeacher++
@@ -197,5 +199,12 @@ object Util {
             }
         }
         return false
+    }
+
+    fun printFitnessFunctions(population: MutableList<TimetableIndividual>) {
+        population.forEach {
+            print("${it.fitnessFunction} ")
+        }
+        println()
     }
 }

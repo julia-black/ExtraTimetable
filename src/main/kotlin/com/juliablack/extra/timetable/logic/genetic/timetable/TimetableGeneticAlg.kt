@@ -2,6 +2,7 @@ package com.juliablack.extra.timetable.logic.genetic.timetable
 
 import com.juliablack.extra.timetable.logic.genetic.common.GeneticAlgorithm
 import com.juliablack.extra.timetable.logic.genetic.common.Individual
+import com.juliablack.extra.timetable.util.Util
 
 
 class TimetableGeneticAlg : GeneticAlgorithm() {
@@ -22,6 +23,8 @@ class TimetableGeneticAlg : GeneticAlgorithm() {
             it.calculateFitnessFunction()
         }
         population.sortBy { it.fitnessFunction }
+
+        Util.printFitnessFunctions(population)
 
         val count = population.size
         for (i in 0 until count / 2) {

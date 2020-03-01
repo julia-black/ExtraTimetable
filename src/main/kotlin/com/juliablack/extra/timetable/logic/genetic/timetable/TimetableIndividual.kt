@@ -14,7 +14,6 @@ class TimetableIndividual : Individual {
     var optionalLessonsOfDay: Int? = null
     var groups: List<Group>? = null
 
-
     private var classes: MutableList<StudentClass>
     private var chromosomes: MutableList<Chromosome>
     private var maxLessonOfDay: Int
@@ -64,6 +63,10 @@ class TimetableIndividual : Individual {
                 }
             }
         }
+
+        val timetable = Timetable(this)
+        //количество окон
+        result -= timetable.getCountInterval()
 
         //Соответсвие аудитории размеру
         fitnessFunction = result
@@ -149,13 +152,15 @@ class TimetableIndividual : Individual {
                 if (Util.isTimeFree(this, time, room, group)
                         && Util.isTimeOnTeacherFree(this, time, teacher, groups)) {
                     freeTimes.add(time)
+                } else {
+                    print("")
                 }
             }
         }
-        try {
-            return freeTimes[kotlin.random.Random.nextInt(freeTimes.size)]
-        } catch (e: IllegalArgumentException) {
+        if (freeTimes.isEmpty()) {
             throw Exception("Слишком большое количество предметов. Увеличьте максимальное количество пар в день")
+        } else {
+            return freeTimes[kotlin.random.Random.nextInt(freeTimes.size)]
         }
     }
 }
