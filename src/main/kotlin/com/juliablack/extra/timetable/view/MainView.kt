@@ -3,6 +3,12 @@ package com.juliablack.extra.timetable.view
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import com.juliablack.extra.timetable.controller.EventController
 import com.juliablack.extra.timetable.logic.genetic.GeneratorTimetable
+import com.juliablack.extra.timetable.logic.genetic.timetable.Const.COUNT
+import com.juliablack.extra.timetable.logic.genetic.timetable.Const.COUNT_CYCLE_ALGORITHM
+import com.juliablack.extra.timetable.logic.genetic.timetable.Const.COUNT_OF_POPULATION
+import com.juliablack.extra.timetable.logic.genetic.timetable.Const.MAX_LESSONS_OF_DAY
+import com.juliablack.extra.timetable.logic.genetic.timetable.Const.OPTIONAL_LESSONS_OF_DAY
+import com.juliablack.extra.timetable.util.Util
 import javafx.application.Platform
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
@@ -73,26 +79,52 @@ class MainView : View() {
 
                         try {
                             val generatorTimeTable = GeneratorTimetable(OPTIONAL_LESSONS_OF_DAY, MAX_LESSONS_OF_DAY)
-                            val allProgress = COUNT_OF_POPULATION + GeneratorTimetable.COUNT_CYCLE_ALGORITHM
+                            val allProgress = (COUNT_OF_POPULATION + COUNT_CYCLE_ALGORITHM) * COUNT // todo временно * COUNT
                             var progress = 0L
-                            updateTitle("Генерация стартовой популяции")
-                            generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION) {
-                                updateProgress(progress++, allProgress)
-                            }
-                            updateTitle("Генерация расписания")
 
-                            generatorTimeTable.generateTimetable {
-                                updateProgress(progress++, GeneratorTimetable.COUNT_CYCLE_ALGORITHM)
-                            }.subscribe {
-                                generatorTimeTable.saveTimetable(it)
-                                Platform.runLater {
-                                    Alert(AlertType.INFORMATION, "Расписание timetable.json создано в папке проекта", OK).apply {
-                                        val stage = dialogPane.scene.window as Stage
-                                        stage.icons.add(Image("/app/timetable.png"))
-                                        stage.showAndWait()
+                            val results = mutableListOf<Triple<Float, Float, Float>>()
+                            for (i in 0 until COUNT) {
+                                generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION) {
+                                    updateProgress(progress++, allProgress)
+                                }
+                                updateTitle("Генерация расписания")
+                                generatorTimeTable.testExperiment {
+                                    updateProgress(progress++, COUNT_CYCLE_ALGORITHM)
+                                }.subscribe {
+                                    val timetable = it.first
+                                    val result = it.second
+                                    results.add(result)
+                                    generatorTimeTable.saveTimetable(timetable)
+                                    Platform.runLater {
+                                        Alert(AlertType.INFORMATION, "Расписание timetable.json создано в папке проекта", OK).apply {
+                                            val stage = dialogPane.scene.window as Stage
+                                            stage.icons.add(Image("/app/timetable.png"))
+                                            stage.showAndWait()
+                                        }
+                                    }
+                                    if (results.size == COUNT) {
+                                        Util.showResult(results)
                                     }
                                 }
                             }
+                            //todo test
+//                            updateTitle("Генерация стартовой популяции")
+//                            generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION) {
+//                                updateProgress(progress++, allProgress)
+//                            }
+//                            updateTitle("Генерация расписания")
+//                            generatorTimeTable.generateTimetable {
+//                                updateProgress(progress++, COUNT_CYCLE_ALGORITHM)
+//                            }.subscribe {
+//                                generatorTimeTable.saveTimetable(it)
+//                                Platform.runLater {
+//                                    Alert(AlertType.INFORMATION, "Расписание timetable.json создано в папке проекта", OK).apply {
+//                                        val stage = dialogPane.scene.window as Stage
+//                                        stage.icons.add(Image("/app/timetable.png"))
+//                                        stage.showAndWait()
+//                                    }
+//                                }
+//                            }
                         } catch (e: Exception) {
                             Platform.runLater {
                                 Alert(AlertType.ERROR, e.message, OK).apply {
@@ -114,36 +146,57 @@ class MainView : View() {
                         runAsync {
                             updateTitle("Загрузка данных")
                             val generatorTimeTable = GeneratorTimetable(OPTIONAL_LESSONS_OF_DAY, MAX_LESSONS_OF_DAY, files[0])
-                            val allProgress = COUNT_OF_POPULATION + GeneratorTimetable.COUNT_CYCLE_ALGORITHM
+                            val allProgress = (COUNT_OF_POPULATION + COUNT_CYCLE_ALGORITHM) * COUNT //todo временно * COUNT
                             var progress = 0L
-                            updateTitle("Генерация стартовой популяции")
-                            generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION) {
-                                updateProgress(progress++, allProgress)
-                            }
 
-                            updateTitle("Генерация расписания")
-                            generatorTimeTable.generateTimetable {
-                                updateProgress(progress++, GeneratorTimetable.COUNT_CYCLE_ALGORITHM)
-                            }.subscribe {
-                                generatorTimeTable.saveTimetable(it)
-                                Platform.runLater {
-                                    Alert(AlertType.INFORMATION, "Расписание timetable.json создано в папке проекта", OK).apply {
-                                        val stage = dialogPane.scene.window as Stage
-                                        stage.icons.add(Image("/app/timetable.png"))
-                                        stage.showAndWait()
+                            val results = mutableListOf<Triple<Float, Float, Float>>()
+                            for (i in 0 until COUNT) {
+                                updateTitle("Генерация стартовой популяции")
+                                generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION) {
+                                    updateProgress(progress++, allProgress)
+                                }
+                                updateTitle("Генерация расписания")
+                                generatorTimeTable.testExperiment {
+                                    updateProgress(progress++, allProgress)
+                                }.subscribe {
+                                    val timetable = it.first
+                                    results.add(it.second)
+                                    generatorTimeTable.saveTimetable(timetable)
+                                    Platform.runLater {
+                                        Alert(AlertType.INFORMATION, "Расписание timetable.json создано в папке проекта", OK).apply {
+                                            val stage = dialogPane.scene.window as Stage
+                                            stage.icons.add(Image("/app/timetable.png"))
+                                            stage.showAndWait()
+                                        }
+                                    }
+                                    if (results.size == COUNT) {
+                                        Util.showResult(results)
                                     }
                                 }
                             }
-                            updateProgress(3, 3)
+
+                            //todo test
+//                            updateTitle("Генерация стартовой популяции")
+//                            generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION) {
+//                                updateProgress(progress++, allProgress)
+//                            }
+//
+//                            updateTitle("Генерация расписания")
+//                            generatorTimeTable.generateTimetable {
+//                                updateProgress(progress++, allProgress)
+//                            }.subscribe {
+//                                generatorTimeTable.saveTimetable(it)
+//                                Platform.runLater {
+//                                    Alert(AlertType.INFORMATION, "Расписание timetable.json создано в папке проекта", OK).apply {
+//                                        val stage = dialogPane.scene.window as Stage
+//                                        stage.icons.add(Image("/app/timetable.png"))
+//                                        stage.showAndWait()
+//                                    }
+//                                }
+//                            }
                         }
                     }
 
                 }
-    }
-
-    companion object {
-        const val COUNT_OF_POPULATION = 100
-        const val MAX_LESSONS_OF_DAY = 6 //максимальное количество пар в день
-        const val OPTIONAL_LESSONS_OF_DAY = 4 //желательное количество пар в день
     }
 }

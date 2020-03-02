@@ -207,4 +207,19 @@ object Util {
         }
         println()
     }
+
+    fun showResult(results: MutableList<Triple<Float, Float, Float>>) {
+        var mean = 0f
+        var bestFitness = 0f
+        var efficiency = 0f
+        results.forEach {
+            mean += it.first
+            bestFitness += it.second
+            efficiency += it.third
+        }
+        mean /= results.size.toFloat()
+        bestFitness /= results.size.toFloat()
+        efficiency /= results.size.toFloat()
+        println("All results: Mean of first population: $mean, Best: $bestFitness, Efficiency: $efficiency%")
+    }
 }

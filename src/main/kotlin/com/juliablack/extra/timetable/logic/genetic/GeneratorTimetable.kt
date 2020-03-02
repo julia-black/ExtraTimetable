@@ -5,6 +5,9 @@ import com.juliablack.extra.timetable.logic.db.Database
 import com.juliablack.extra.timetable.logic.db.DbContract
 import com.juliablack.extra.timetable.logic.genetic.common.GeneticAlgorithm
 import com.juliablack.extra.timetable.logic.genetic.timetable.*
+import com.juliablack.extra.timetable.logic.genetic.timetable.Const.COUNT_CYCLE_ALGORITHM
+import com.juliablack.extra.timetable.logic.genetic.timetable.enums.CrossoverType
+import com.juliablack.extra.timetable.logic.genetic.timetable.enums.MutationType
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
 import com.juliablack.extra.timetable.util.Util
 import com.juliablack.extra.timetable.util.containsIgnoreCase
@@ -62,17 +65,50 @@ class GeneratorTimetable(
         geneticAlgorithm.setStartPopulation(population)
     }
 
+    fun testExperiment(callback: () -> Unit): Observable<Pair<Timetable, Triple<Float, Float, Float>>> {
+        val bestTimetable: TimetableIndividual?
+        var mean = 0f
+        for (i in 0 until COUNT_CYCLE_ALGORITHM) {
+            geneticAlgorithm.generationPopulation()
+            if (i == 0L) {
+                mean = geneticAlgorithm.getMeanFitnessFunction() //первоначальное среднее значение
+            }
+            geneticAlgorithm.crossover(CrossoverType.PANMIXIA)
+            geneticAlgorithm.mutation(MutationType.LARGE_MUTATION)
+            callback.invoke()
+        }
+
+        bestTimetable = geneticAlgorithm.getBestIndividual() as TimetableIndividual
+        val bestFitness = bestTimetable.calculateFitnessFunction().toFloat()
+        val efficiency = getEfficiency(mean, bestFitness)
+        println("Mean of first population: $mean, Best: $bestFitness, Efficiency: $efficiency%")
+
+        return Observable.just(Pair(Timetable(bestTimetable), Triple(mean, bestFitness, efficiency)))
+    }
+
     /**
      * Генерация расписания (основной процесс)
      */
     fun generateTimetable(callback: () -> Unit): Observable<Timetable> {
+        var bestTimetable: TimetableIndividual? = null
+
+        var mean = 0f
         for (i in 0 until COUNT_CYCLE_ALGORITHM) {
             geneticAlgorithm.generationPopulation()
-            geneticAlgorithm.crossover()
-            geneticAlgorithm.mutationAll(0.5) //вероятность мутации
+            if (i == 0L) {
+                mean = geneticAlgorithm.getMeanFitnessFunction() //первоначальное среднее значение
+            }
+            geneticAlgorithm.crossover(CrossoverType.PANMIXIA)
+            geneticAlgorithm.mutation(MutationType.LARGE_MUTATION)
             callback.invoke()
         }
-        return Observable.just(Timetable(geneticAlgorithm.getBestIndividual() as TimetableIndividual))
+
+        bestTimetable = geneticAlgorithm.getBestIndividual() as TimetableIndividual
+        val bestFitness = bestTimetable.calculateFitnessFunction().toFloat()
+        val efficiency = getEfficiency(mean, bestFitness)
+        println("Mean of first population: $mean, Best: $bestFitness, Efficiency: $efficiency%")
+
+        return Observable.just(Timetable(bestTimetable!!))
     }
 
     fun saveTimetable(timeTable: Timetable) {
@@ -82,12 +118,16 @@ class GeneratorTimetable(
         }
     }
 
+    private fun getEfficiency(mean: Float, bestFitness: Float): Float {
+        val result = 100 * bestFitness / mean
+        return 100 - result
+    }
+
     private fun downloadTimetableFromDB() {
         Database.getGroups().toList().subscribe { it -> groups = it }
         Database.getLessons().toList().subscribe { it -> lessons = it }
         Database.getTeachers().subscribe { res ->
             val idTeacher = res.getInt(DbContract.ID_TEACHER)
-            println(teachers.toString())
             teachers.find { teacher -> teacher.id == idTeacher }?.let {
                 teachers.find { teacher -> teacher.id == idTeacher }?.lessons!!.add(
                         Lesson(res.getString(DbContract.NAME_LESSON),
@@ -211,9 +251,7 @@ class GeneratorTimetable(
                             CellType.FORMULA -> cells.add((cell as XSSFCell).rawValue)
                             CellType.NUMERIC -> cells.add(cell.numericCellValue.toString())
                             CellType.BLANK -> cells.add("")
-                            else -> {
-                                cells.add("")
-                            }
+                            else -> cells.add("")
                         }
                     }
                 }
@@ -244,9 +282,6 @@ class GeneratorTimetable(
     }
 
     companion object {
-
-        const val COUNT_CYCLE_ALGORITHM = 100L
-
         private var rooms: MutableList<ClassRoom> = mutableListOf()
         private var lessons: MutableList<Lesson> = mutableListOf()
         private var groups: MutableList<Group> = mutableListOf()
