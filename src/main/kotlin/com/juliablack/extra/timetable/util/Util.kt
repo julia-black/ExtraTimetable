@@ -164,6 +164,20 @@ object Util {
         return true
     }
 
+    /**
+     * Проверка имеет ли пара уже созданные соседние пары
+     */
+    fun hasNearbyTime(timeTable: TimetableIndividual, time: Time): Boolean {
+        timeTable.getTimes().getGenom().forEach {
+            val currentTime = it as Time
+            if (currentTime.dayOfWeek == time.dayOfWeek && (currentTime.numberClass == time.numberClass + 1 ||
+                    (time.numberClass != 0 && currentTime.numberClass == time.numberClass - 1))) {
+                return true
+            }
+        }
+        return false
+    }
+
     fun isTimeOnTeacherFree(timeTable: TimetableIndividual, time: Time, teacher: Teacher, groups: List<Group>): Boolean {
         groups.forEach { group ->
             timeTable.getFullClasses(group).find {

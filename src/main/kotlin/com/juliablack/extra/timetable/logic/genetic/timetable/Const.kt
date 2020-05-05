@@ -6,5 +6,5 @@ object Const {
     const val OPTIONAL_LESSONS_OF_DAY = 4 //желательное количество пар в день
     const val COUNT_CYCLE_ALGORITHM = 100L
     const val PROBABILITY_MUTATION = 0.30
-    const val COUNT = 2
+    const val COUNT = 1
 }

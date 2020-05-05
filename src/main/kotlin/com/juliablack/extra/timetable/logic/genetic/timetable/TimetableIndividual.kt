@@ -146,21 +146,31 @@ class TimetableIndividual : Individual {
 
     fun getRandomFreeTime(room: ClassRoom, teacher: Teacher, group: Group, groups: List<Group>): Time {
         val freeTimes = mutableListOf<Time>()
+        val freeTimesNearby = mutableListOf<Time>()
         DayOfWeek.values().forEach { day ->
             for (i in 0..maxLessonOfDay) {
                 val time = Time(day, i)
                 if (Util.isTimeFree(this, time, room, group)
                         && Util.isTimeOnTeacherFree(this, time, teacher, groups)) {
                     freeTimes.add(time)
+                    if (Util.hasNearbyTime(this, time)) {
+                        freeTimesNearby.add(time)
+                    }
                 } else {
                     print("")
                 }
             }
         }
-        if (freeTimes.isEmpty()) {
-            throw Exception("Слишком большое количество предметов. Увеличьте максимальное количество пар в день")
-        } else {
-            return freeTimes[kotlin.random.Random.nextInt(freeTimes.size)]
+        return when {
+            freeTimesNearby.isNotEmpty() -> {
+                freeTimesNearby[kotlin.random.Random.nextInt(freeTimesNearby.size)]
+            }
+            freeTimes.isNotEmpty() -> {
+                freeTimes[kotlin.random.Random.nextInt(freeTimes.size)]
+            }
+            else -> {
+                throw Exception("Слишком большое количество предметов. Увеличьте максимальное количество пар в день")
+            }
         }
     }
 }
