@@ -40,7 +40,7 @@ data class StudentClassFull(var lesson: Lesson,
  * @param lessons - мапа лекций с указанием количества пар в неделю
  */
 data class GroupProgram(var numGroup: String,
-                         var lessons: MutableMap<Lesson, Int>)
+                        var lessons: MutableMap<Lesson, Int>)
 
 data class DayClass(var dayOfWeek: DayOfWeek,
                     var classes: MutableList<SimpleClass>)
@@ -50,11 +50,27 @@ data class SimpleClass(var time: Int, //номер пары
                        var lessonName: String,
                        var type: String, //Лекия или практика
                        var room: Int,
-                       var building: Int
-)
+                       var building: Int) {
+
+    override fun toString(): String {
+        val typeStr = when (type) {
+            TypeLesson.LECTURE.toString() -> "лек."
+            TypeLesson.LABORATORY.toString() -> "пр."
+            else -> "сем."
+        }
+        return "$typeStr\n$lessonName\n$teacherName\n$room, корпус $building"
+    }
+}
 
 data class GroupTimetable(var group: Group,
                           var list: List<DayClass>)
 
-
-
+class GroupTimetableForView {
+    var time = ""
+    var monday = ""
+    var tuesday = ""
+    var wednesday = ""
+    var thursday = ""
+    var friday = ""
+    var saturday = ""
+}

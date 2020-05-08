@@ -1,5 +1,9 @@
 package com.juliablack.extra.timetable.logic.genetic.timetable
 
+import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
+import com.juliablack.extra.timetable.util.getTime
+import javafx.collections.ObservableList
+import tornadofx.*
 import kotlin.math.abs
 
 /**
@@ -51,6 +55,43 @@ class Timetable {
             timetable.add(GroupTimetable(group = group, list = list))
         }
         return timetable
+    }
+
+
+    fun parseTimetableToView(groupNumber: String): ObservableList<GroupTimetableForView>? {
+        this.timetable.find { it.group.number == groupNumber }?.apply {
+            val timetableForView = observableList<GroupTimetableForView>()
+            this.list.forEach { dayClass ->
+                dayClass.classes.forEachIndexed { index, simpleClass ->
+                    if (timetableForView.size <= index) {
+                        timetableForView.add(GroupTimetableForView())
+                    }
+                    timetableForView[index].time = index.getTime()
+                    when (dayClass.dayOfWeek) {
+                        DayOfWeek.MONDAY -> {
+                            timetableForView[index].monday = simpleClass.toString()
+                        }
+                        DayOfWeek.TUESDAY -> {
+                            timetableForView[index].tuesday = simpleClass.toString()
+                        }
+                        DayOfWeek.WEDNESDAY -> {
+                            timetableForView[index].wednesday = simpleClass.toString()
+                        }
+                        DayOfWeek.THURSDAY -> {
+                            timetableForView[index].thursday = simpleClass.toString()
+                        }
+                        DayOfWeek.FRIDAY -> {
+                            timetableForView[index].friday = simpleClass.toString()
+                        }
+                        DayOfWeek.SATURDAY -> {
+                            timetableForView[index].saturday = simpleClass.toString()
+                        }
+                    }
+                }
+            }
+            return timetableForView
+        }
+        return null
     }
 
     fun getCountInterval(): Int {

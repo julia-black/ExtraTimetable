@@ -17,10 +17,10 @@ fun Map<Int, Lesson>.containsLesson(lesson: Lesson): Boolean {
 }
 
 fun List<Group>.findIdxGroup(number: String): Int {
-    return this.indexOfFirst { it.number == number}
+    return this.indexOfFirst { it.number == number }
 }
 
-fun List<Group>.findGroup(number: String) : Group? {
+fun List<Group>.findGroup(number: String): Group? {
     return find { it.number.contains(number) }
 }
 
@@ -46,4 +46,17 @@ fun MutableList<MutableList<String>>.getColumn(idxColumn: Int): List<String> {
         }
     }
     return result
+}
+
+fun Int.getTime(): String {
+    return when (this) {
+        0 -> "08:20\n09:50"
+        1 -> "10:00\n11:35"
+        2 -> "12:05\n13:40"
+        3 -> "13:50\n15:25"
+        4 -> "15:35\n17:10"
+        5 -> "17:20\n18:40"
+        6 -> "18:45\n20:05"
+        else -> "20:10\n21:30"
+    }
 }
