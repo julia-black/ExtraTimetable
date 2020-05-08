@@ -1,11 +1,11 @@
 package com.juliablack.extra.timetable.logic.genetic
 
 import com.google.gson.Gson
+import com.juliablack.extra.timetable.app.Settings
 import com.juliablack.extra.timetable.logic.db.Database
 import com.juliablack.extra.timetable.logic.db.DbContract
 import com.juliablack.extra.timetable.logic.genetic.common.GeneticAlgorithm
 import com.juliablack.extra.timetable.logic.genetic.timetable.*
-import com.juliablack.extra.timetable.logic.genetic.timetable.Const.COUNT_CYCLE_ALGORITHM
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.CrossoverType
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.MutationType
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
@@ -68,7 +68,7 @@ class GeneratorTimetable(
     fun testExperiment(callback: () -> Unit): Observable<Pair<Timetable, Triple<Float, Float, Float>>> {
         val bestTimetable: TimetableIndividual?
         var mean = 0f
-        for (i in 0 until COUNT_CYCLE_ALGORITHM) {
+        for (i in 0 until Settings.countCycle) {
             geneticAlgorithm.generationPopulation()
             if (i == 0L) {
                 mean = geneticAlgorithm.getMeanFitnessFunction() //первоначальное среднее значение
@@ -93,7 +93,7 @@ class GeneratorTimetable(
         var bestTimetable: TimetableIndividual? = null
 
         var mean = 0f
-        for (i in 0 until COUNT_CYCLE_ALGORITHM) {
+        for (i in 0 until Settings.countCycle) {
             geneticAlgorithm.generationPopulation()
             if (i == 0L) {
                 mean = geneticAlgorithm.getMeanFitnessFunction() //первоначальное среднее значение
@@ -179,7 +179,7 @@ class GeneratorTimetable(
     @Throws(Exception::class)
     private fun downloadTimetableFromFile(file: File) {
         getRoomsFromDB()
-        parseExcel(file, isFirstSemester = true) //todo потом сделать настройку
+        parseExcel(file, Settings.isFirstSemester)
     }
 
     @Throws(Exception::class)

@@ -8,4 +8,7 @@ class EventController : Controller() {
     val generateTimetable: BehaviorSubject<Unit> = BehaviorSubject.create<Unit>()
 
     val showViewOpenFile: BehaviorSubject<Unit> = BehaviorSubject.create<Unit>()
+
+    val openSettings: BehaviorSubject<Unit> = BehaviorSubject.create<Unit>()
+
 }

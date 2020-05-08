@@ -1,13 +1,9 @@
 package com.juliablack.extra.timetable.view
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
+import com.juliablack.extra.timetable.app.Settings
 import com.juliablack.extra.timetable.controller.EventController
 import com.juliablack.extra.timetable.logic.genetic.GeneratorTimetable
-import com.juliablack.extra.timetable.logic.genetic.timetable.Const.COUNT
-import com.juliablack.extra.timetable.logic.genetic.timetable.Const.COUNT_CYCLE_ALGORITHM
-import com.juliablack.extra.timetable.logic.genetic.timetable.Const.COUNT_OF_POPULATION
-import com.juliablack.extra.timetable.logic.genetic.timetable.Const.MAX_LESSONS_OF_DAY
-import com.juliablack.extra.timetable.logic.genetic.timetable.Const.OPTIONAL_LESSONS_OF_DAY
 import com.juliablack.extra.timetable.util.Util
 import javafx.application.Platform
 import javafx.scene.control.Alert
@@ -51,6 +47,11 @@ class MainView : View() {
                         }
                     }
                     menu("Настройки") {
+                        item("Изменить").apply {
+                            actionEvents()
+                                    .map { Unit }
+                                    .subscribe(controller.openSettings)
+                        }
                     }
                 }
             }
@@ -78,18 +79,18 @@ class MainView : View() {
                         updateTitle("Загрузка данных")
 
                         try {
-                            val generatorTimeTable = GeneratorTimetable(OPTIONAL_LESSONS_OF_DAY, MAX_LESSONS_OF_DAY)
-                            val allProgress = (COUNT_OF_POPULATION + COUNT_CYCLE_ALGORITHM) * COUNT // todo временно * COUNT
+                            val generatorTimeTable = GeneratorTimetable(Settings.optimalLessonsOfDay, Settings.maxLessonsOfDay)
+                            val allProgress = (Settings.countOfPopulation + Settings.countCycle) * Settings.count
                             var progress = 0L
 
                             val results = mutableListOf<Triple<Float, Float, Float>>()
-                            for (i in 0 until COUNT) {
-                                generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION) {
+                            for (i in 0 until Settings.count) {
+                                generatorTimeTable.generateStartPopulation(Settings.countOfPopulation) {
                                     updateProgress(progress++, allProgress)
                                 }
                                 updateTitle("Генерация расписания")
                                 generatorTimeTable.testExperiment {
-                                    updateProgress(progress++, COUNT_CYCLE_ALGORITHM)
+                                    updateProgress(progress++, Settings.countCycle)
                                 }.subscribe {
                                     val timetable = it.first
                                     val result = it.second
@@ -102,29 +103,11 @@ class MainView : View() {
                                             stage.showAndWait()
                                         }
                                     }
-                                    if (results.size == COUNT) {
+                                    if (results.size == Settings.count) {
                                         Util.showResult(results)
                                     }
                                 }
                             }
-                            //todo test
-//                            updateTitle("Генерация стартовой популяции")
-//                            generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION) {
-//                                updateProgress(progress++, allProgress)
-//                            }
-//                            updateTitle("Генерация расписания")
-//                            generatorTimeTable.generateTimetable {
-//                                updateProgress(progress++, COUNT_CYCLE_ALGORITHM)
-//                            }.subscribe {
-//                                generatorTimeTable.saveTimetable(it)
-//                                Platform.runLater {
-//                                    Alert(AlertType.INFORMATION, "Расписание timetable.json создано в папке проекта", OK).apply {
-//                                        val stage = dialogPane.scene.window as Stage
-//                                        stage.icons.add(Image("/app/timetable.png"))
-//                                        stage.showAndWait()
-//                                    }
-//                                }
-//                            }
                         } catch (e: Exception) {
                             Platform.runLater {
                                 Alert(AlertType.ERROR, e.message, OK).apply {
@@ -145,14 +128,14 @@ class MainView : View() {
                     if (files.isNotEmpty()) {
                         runAsync {
                             updateTitle("Загрузка данных")
-                            val generatorTimeTable = GeneratorTimetable(OPTIONAL_LESSONS_OF_DAY, MAX_LESSONS_OF_DAY, files[0])
-                            val allProgress = (COUNT_OF_POPULATION + COUNT_CYCLE_ALGORITHM) * COUNT //todo временно * COUNT
+                            val generatorTimeTable = GeneratorTimetable(Settings.optimalLessonsOfDay, Settings.maxLessonsOfDay, files[0])
+                            val allProgress = (Settings.countOfPopulation + Settings.countCycle) * Settings.count
                             var progress = 0L
 
                             val results = mutableListOf<Triple<Float, Float, Float>>()
-                            for (i in 0 until COUNT) {
+                            for (i in 0 until Settings.count) {
                                 updateTitle("Генерация стартовой популяции")
-                                generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION) {
+                                generatorTimeTable.generateStartPopulation(Settings.countOfPopulation) {
                                     updateProgress(progress++, allProgress)
                                 }
                                 updateTitle("Генерация расписания")
@@ -169,34 +152,19 @@ class MainView : View() {
                                             stage.showAndWait()
                                         }
                                     }
-                                    if (results.size == COUNT) {
+                                    if (results.size == Settings.count) {
                                         Util.showResult(results)
                                     }
                                 }
                             }
-
-                            //todo test
-//                            updateTitle("Генерация стартовой популяции")
-//                            generatorTimeTable.generateStartPopulation(COUNT_OF_POPULATION) {
-//                                updateProgress(progress++, allProgress)
-//                            }
-//
-//                            updateTitle("Генерация расписания")
-//                            generatorTimeTable.generateTimetable {
-//                                updateProgress(progress++, allProgress)
-//                            }.subscribe {
-//                                generatorTimeTable.saveTimetable(it)
-//                                Platform.runLater {
-//                                    Alert(AlertType.INFORMATION, "Расписание timetable.json создано в папке проекта", OK).apply {
-//                                        val stage = dialogPane.scene.window as Stage
-//                                        stage.icons.add(Image("/app/timetable.png"))
-//                                        stage.showAndWait()
-//                                    }
-//                                }
-//                            }
                         }
                     }
+                }
 
+        controller.openSettings
+                .subscribe {
+                    val newScope = Scope()
+                    find<SettingsView>(newScope).openWindow(owner = null)
                 }
     }
 }

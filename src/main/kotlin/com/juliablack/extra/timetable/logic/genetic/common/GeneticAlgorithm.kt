@@ -1,6 +1,6 @@
 package com.juliablack.extra.timetable.logic.genetic.common
 
-import com.juliablack.extra.timetable.logic.genetic.timetable.Const
+import com.juliablack.extra.timetable.app.Settings
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.CrossoverType
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.MutationType
 import kotlin.random.Random
@@ -79,7 +79,7 @@ abstract class GeneticAlgorithm {
                 getPopulation()[idx].mutation()
             }
             MutationType.LARGE_MUTATION -> {
-                mutationAll(Const.PROBABILITY_MUTATION)
+                mutationAll(Settings.probabilityMutation)
             }
         }
     }
