@@ -25,16 +25,17 @@ fun List<Group>.findGroup(number: String): Group? {
 }
 
 fun Map<Int, Lesson>.findLesson(index: Int): Lesson? {
-    if (containsKey(index)) {
-        return get(index)
+    return if (containsKey(index)) {
+        get(index)
     } else {
+        var resultIdx = 0
         forEach {
-            if (it.key >= index) {
-                return it.value
+            if (it.key <= index) {
+                resultIdx = it.key
             }
         }
+        findLesson(resultIdx)
     }
-    return null
 }
 
 

@@ -153,7 +153,8 @@ class TimetableIndividual : Individual {
                 if (Util.isTimeFree(this, time, room, group)
                         && Util.isTimeOnTeacherFree(this, time, teacher, groups)) {
                     freeTimes.add(time)
-                    if (Util.hasNearbyTime(this, time)) {
+                    val countInDay = this.getCountLessonsOfDay(group, day)
+                    if (Util.hasNearbyTime(this, time) && countInDay < maxLessonOfDay) {
                         freeTimesNearby.add(time)
                     }
                 } else {
@@ -169,6 +170,8 @@ class TimetableIndividual : Individual {
                 freeTimes[kotlin.random.Random.nextInt(freeTimes.size)]
             }
             else -> {
+                //val cloneArray = (this.chromosomes[1].getGenom() as ArrayList<Time>)
+               // cloneArray.sortWith(compareBy( {it.dayOfWeek }, {it.numberClass}))
                 throw Exception("Слишком большое количество предметов. Увеличьте максимальное количество пар в день")
             }
         }

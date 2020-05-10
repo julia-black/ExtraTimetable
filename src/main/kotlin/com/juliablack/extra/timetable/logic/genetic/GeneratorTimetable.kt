@@ -198,7 +198,7 @@ class GeneratorTimetable(
         val table = mutableListOf<MutableList<String>>()
         val workbook: Workbook = XSSFWorkbook(file)
 
-        for (i in 0 until 2) {
+        for (i in 0 until 13) {
             val sheet = workbook.getSheetAt(i)
             val iterator = sheet.rowIterator()
             while (iterator.hasNext()) {

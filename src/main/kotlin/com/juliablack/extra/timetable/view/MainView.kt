@@ -11,6 +11,7 @@ import javafx.application.Platform
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.ButtonType.OK
+import javafx.scene.control.TextField
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
@@ -31,7 +32,9 @@ class MainView : View() {
     private val controller: EventController by inject()
 
     private var imageView: ImageView? = null
-    //private var tableView: TableView<GroupTimetableForView>? = null
+
+    private var groupNumberField: TextField? = null
+
 
     private var borderPane: BorderPane = borderpane {
         center {
@@ -171,7 +174,7 @@ class MainView : View() {
                                     val timetable = it.first
                                     results.add(it.second)
                                     generatorTimeTable.saveTimetable(timetable)
-                                    showTimetable(timetable, "111")
+                                    showTimetable(timetable, null)
                                     if (results.size == Settings.count) {
                                         Util.showResult(results)
                                     }
@@ -188,14 +191,28 @@ class MainView : View() {
                 }
     }
 
-    private fun showTimetable(timetable: Timetable, groupNumber: String) {
+    private fun showTimetable(timetable: Timetable, groupNumber: String?) {
         val timetableForView = timetable.parseTimetableToView(groupNumber)
-        if (timetableForView == null) {
-            warning("Не найдена введенная группа")
+        if (timetableForView.first == null) {
+            Platform.runLater {
+                warning("Не найдена введенная группа")
+            }
         } else {
             borderPane = borderpane {
+                top {
+                    form {
+                        fieldset {
+                            field("Группа:") {
+                                groupNumberField = textfield(timetableForView.second ?: "")
+                                button("Поиск").action {
+                                    showTimetable(timetable, groupNumberField!!.text.toString())
+                                }
+                            }
+                        }
+                    }
+                }
                 center {
-                    tableview(timetableForView) {
+                    tableview(timetableForView.first) {
                         readonlyColumn("", GroupTimetableForView::time)
                         readonlyColumn("Понедельник", GroupTimetableForView::monday)
                         readonlyColumn("Вторник", GroupTimetableForView::tuesday)

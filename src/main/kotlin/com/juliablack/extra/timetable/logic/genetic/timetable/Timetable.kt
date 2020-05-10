@@ -58,8 +58,8 @@ class Timetable {
     }
 
 
-    fun parseTimetableToView(groupNumber: String): ObservableList<GroupTimetableForView>? {
-        this.timetable.find { it.group.number == groupNumber }?.apply {
+    fun parseTimetableToView(groupNumber: String?): Pair<ObservableList<GroupTimetableForView>?, String?> {
+        this.timetable.find { it.group.number == groupNumber || groupNumber.isNullOrBlank()}?.apply {
             val timetableForView = observableList<GroupTimetableForView>()
             this.list.forEach { dayClass ->
                 dayClass.classes.forEachIndexed { index, simpleClass ->
@@ -89,9 +89,9 @@ class Timetable {
                     }
                 }
             }
-            return timetableForView
+            return Pair(timetableForView, group.number)
         }
-        return null
+        return Pair(null, groupNumber)
     }
 
     fun getCountInterval(): Int {

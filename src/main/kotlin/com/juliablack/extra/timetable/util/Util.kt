@@ -24,7 +24,7 @@ object Util {
             }
             val lesson = Lesson(title, type, type == TypeLesson.LABORATORY, isNeedProjector = false)
             if (!lessons.containsLesson(lesson)) {
-                lessons.put(index, lesson)
+                lessons[index] = lesson
             }
             //Добавляем преподавателя
             if (table[index].size > idxTeacher && table[index][idxTeacher].isNotBlank()) {
@@ -171,7 +171,7 @@ object Util {
         timeTable.getTimes().getGenom().forEach {
             val currentTime = it as Time
             if (currentTime.dayOfWeek == time.dayOfWeek && (currentTime.numberClass == time.numberClass + 1 ||
-                    (time.numberClass != 0 && currentTime.numberClass == time.numberClass - 1))) {
+                            (time.numberClass != 0 && currentTime.numberClass == time.numberClass - 1))) {
                 return true
             }
         }

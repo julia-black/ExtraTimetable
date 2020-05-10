@@ -54,7 +54,7 @@ abstract class GeneticAlgorithm {
 
             val possibleLocuses = getPossibleCrossovers(idxIndividual1, idxIndividual2)
 
-            if (!possibleLocuses.isEmpty()) {
+            if (possibleLocuses.isNotEmpty()) {
                 countCrossover++
                 val locus = Random.nextInt(0, possibleLocuses.size - 1)
 
