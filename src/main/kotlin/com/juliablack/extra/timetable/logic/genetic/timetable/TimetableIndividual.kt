@@ -4,6 +4,7 @@ import com.juliablack.extra.timetable.logic.genetic.GeneratorTimetable
 import com.juliablack.extra.timetable.logic.genetic.common.Chromosome
 import com.juliablack.extra.timetable.logic.genetic.common.Individual
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
+import com.juliablack.extra.timetable.util.GeneticAlgException
 import com.juliablack.extra.timetable.util.Util
 import java.util.*
 
@@ -115,17 +116,21 @@ class TimetableIndividual : Individual {
         val oldTime = getTimes().getGen(locus)
         val oldRoom = getRooms().getGen(locus)
         val oldFitness = calculateFitnessFunction()
-        val triple = GeneratorTimetable
-                .generationTriple(
-                        studentClass.lesson,
-                        studentClass.group,
-                        this,
-                        maxLessonOfDay)
-        getTimes().setGen(triple.second, locus)
-        getRooms().setGen(triple.third, locus)
-        if (calculateFitnessFunction() < oldFitness) {
-            getTimes().setGen(oldTime, locus)
-            getRooms().setGen(oldRoom, locus)
+        try {
+            val triple = GeneratorTimetable
+                    .generationTriple(
+                            studentClass.lesson,
+                            studentClass.group,
+                            this)
+
+            getTimes().setGen(triple.second, locus)
+            getRooms().setGen(triple.third, locus)
+            if (calculateFitnessFunction() < oldFitness) {
+                getTimes().setGen(oldTime, locus)
+                getRooms().setGen(oldRoom, locus)
+            }
+        } catch (e: GeneticAlgException) {
+            println("Не удалось выполнить мутацию")
         }
     }
 
@@ -170,9 +175,8 @@ class TimetableIndividual : Individual {
                 freeTimes[kotlin.random.Random.nextInt(freeTimes.size)]
             }
             else -> {
-                //val cloneArray = (this.chromosomes[1].getGenom() as ArrayList<Time>)
-               // cloneArray.sortWith(compareBy( {it.dayOfWeek }, {it.numberClass}))
-                throw Exception("Слишком большое количество предметов. Увеличьте максимальное количество пар в день")
+                throw GeneticAlgException("Слишком большое количество предметов ${teacher.name}, ${group.number}. " +
+                        "Увеличьте максимальное количество пар в день.")
             }
         }
     }

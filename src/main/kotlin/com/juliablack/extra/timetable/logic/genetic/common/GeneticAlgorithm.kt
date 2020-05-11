@@ -1,6 +1,6 @@
 package com.juliablack.extra.timetable.logic.genetic.common
 
-import com.juliablack.extra.timetable.app.Settings
+import com.juliablack.extra.timetable.util.Settings
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.CrossoverType
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.MutationType
 import kotlin.random.Random

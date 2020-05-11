@@ -1,7 +1,7 @@
 package com.juliablack.extra.timetable.view
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
-import com.juliablack.extra.timetable.app.Settings
+import com.juliablack.extra.timetable.util.Settings
 import com.juliablack.extra.timetable.controller.EventController
 import com.juliablack.extra.timetable.logic.genetic.GeneratorTimetable
 import com.juliablack.extra.timetable.logic.genetic.timetable.GroupTimetableForView

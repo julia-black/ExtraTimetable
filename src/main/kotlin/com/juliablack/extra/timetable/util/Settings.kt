@@ -1,8 +1,8 @@
-package com.juliablack.extra.timetable.app
+package com.juliablack.extra.timetable.util
 
 object Settings {
-    var countOfPopulation = 100
-    var maxLessonsOfDay = 6 //максимальное количество пар в день
+    var countOfPopulation = 10
+    var maxLessonsOfDay = 7 //максимальное количество пар в день
     var optimalLessonsOfDay = 4 //желательное количество пар в день
     var countCycle = 100L
     var probabilityMutation = 0.30

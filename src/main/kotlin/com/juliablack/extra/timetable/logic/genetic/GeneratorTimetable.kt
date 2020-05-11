@@ -1,7 +1,7 @@
 package com.juliablack.extra.timetable.logic.genetic
 
 import com.google.gson.Gson
-import com.juliablack.extra.timetable.app.Settings
+import com.juliablack.extra.timetable.util.Settings
 import com.juliablack.extra.timetable.logic.db.Database
 import com.juliablack.extra.timetable.logic.db.DbContract
 import com.juliablack.extra.timetable.logic.genetic.common.GeneticAlgorithm
@@ -54,7 +54,7 @@ class GeneratorTimetable(
                     for (j in 0 until count) {
                         val group = groups.findGroup(groupProgram.numGroup)
                                 ?: throw Exception("Не удалось найти группу из групповой программы")
-                        val triple = generationTriple(lesson, group, individual, maxLessonsOfDay)
+                        val triple = generationTriple(lesson, group, individual)
                         individual.addItem(triple.first, triple.second, triple.third)
                     }
                 }
@@ -288,7 +288,8 @@ class GeneratorTimetable(
         private var teachers: MutableList<Teacher> = mutableListOf()
         private var studentProgram: MutableList<GroupProgram> = mutableListOf()
 
-        fun generationTriple(lesson: Lesson, group: Group, individual: TimetableIndividual, maxLessonsOfDay: Int): Triple<StudentClass, Time, ClassRoom> {
+        fun generationTriple(lesson: Lesson, group: Group, individual: TimetableIndividual)
+                : Triple<StudentClass, Time, ClassRoom> {
             val teacher = getTeacher(lesson)
                     ?: throw Exception("Не найдено преподавателя для предмета ${lesson.name}")
 
