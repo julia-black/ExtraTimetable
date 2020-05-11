@@ -16,6 +16,12 @@ abstract class GeneticAlgorithm {
 
     abstract fun setStartPopulation(population: List<Individual>)
 
+    abstract fun getBestIndividual(count: Int = 1): Individual
+
+    abstract fun getPossibleCrossovers(idxIndividual1: Int, idxIndividual2: Int): List<Int>
+
+    abstract fun getMeanFitnessFunction() : Float
+
     /**
      * Скрещивание. Берем 2 случайных особи (из уже отобранных) и добавляем в популяцию их "детей"
      */
@@ -102,10 +108,4 @@ abstract class GeneticAlgorithm {
     protected fun addIndividual(element: Individual) {
         getPopulation().add(element)
     }
-
-    abstract fun getBestIndividual(count: Int = 1): Individual
-
-    abstract fun getPossibleCrossovers(idxIndividual1: Int, idxIndividual2: Int): List<Int>
-
-    abstract fun getMeanFitnessFunction() : Float
 }

@@ -2,8 +2,12 @@ package com.juliablack.extra.timetable.util
 
 import com.juliablack.extra.timetable.logic.genetic.timetable.*
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
+import com.juliablack.extra.timetable.view.MainView
 
 object Util {
+
+    private const val ANSI_GREEN = "\u001B[32m"
+    private const val ANSI_RESET = "\u001b[0m"
 
     fun parseLessonsAndTeachers(table: MutableList<MutableList<String>>, idxSeminar: Int, idxLaboratory: Int,
                                 idxTeacher: Int, lessonNames: List<String>): Pair<Map<Int, Lesson>, MutableList<Teacher>> {
@@ -235,5 +239,9 @@ object Util {
         bestFitness /= results.size.toFloat()
         efficiency /= results.size.toFloat()
         println("All results: Mean of first population: $mean, Best: $bestFitness, Efficiency: $efficiency%")
+    }
+
+    fun printTime(action: String, time: Long) {
+        println("${ANSI_GREEN}$action completed for: ${time / 1000.0} sec. (${time / 1000.0 / 60.0} min.)${ANSI_RESET}")
     }
 }

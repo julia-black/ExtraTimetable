@@ -74,37 +74,6 @@ class TimetableIndividual : Individual {
         return result
     }
 
-    private fun getCountLessonsOfDay(group: Group, dayOfWeek: DayOfWeek): Int {
-        var count = 0
-        //если в списке аудиторий уже есть такая
-        getTimes().getGenom().forEachIndexed { index, gene ->
-            try {
-                if (getClasses()[index].group == group) {
-                    (gene as Time).apply {
-                        if (this.dayOfWeek == dayOfWeek)
-                            count++
-                    }
-                }
-            } catch (e: Exception) {
-                System.out.println("")
-            }
-        }
-        return count
-    }
-
-    fun getFullClasses(group: Group): List<StudentClassFull> {
-        val list = mutableListOf<StudentClassFull>()
-        getClasses().forEachIndexed { index, studentClass ->
-            val studentClassFull = StudentClassFull(studentClass.lesson,
-                    studentClass.group,
-                    studentClass.teacher,
-                    getTimes().getGen(index) as Time,
-                    getRooms().getGen(index) as ClassRoom)
-            list.add(studentClassFull)
-        }
-        return list
-    }
-
     /**
      * Мутация - рандомный ген выбирается заново.
      */
@@ -179,5 +148,36 @@ class TimetableIndividual : Individual {
                         "Увеличьте максимальное количество пар в день.")
             }
         }
+    }
+
+    fun getFullClasses(group: Group): List<StudentClassFull> {
+        val list = mutableListOf<StudentClassFull>()
+        getClasses().forEachIndexed { index, studentClass ->
+            val studentClassFull = StudentClassFull(studentClass.lesson,
+                    studentClass.group,
+                    studentClass.teacher,
+                    getTimes().getGen(index) as Time,
+                    getRooms().getGen(index) as ClassRoom)
+            list.add(studentClassFull)
+        }
+        return list
+    }
+
+    private fun getCountLessonsOfDay(group: Group, dayOfWeek: DayOfWeek): Int {
+        var count = 0
+        //если в списке аудиторий уже есть такая
+        getTimes().getGenom().forEachIndexed { index, gene ->
+            try {
+                if (getClasses()[index].group == group) {
+                    (gene as Time).apply {
+                        if (this.dayOfWeek == dayOfWeek)
+                            count++
+                    }
+                }
+            } catch (e: Exception) {
+                println("")
+            }
+        }
+        return count
     }
 }

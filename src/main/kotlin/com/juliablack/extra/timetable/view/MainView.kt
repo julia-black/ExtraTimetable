@@ -1,11 +1,11 @@
 package com.juliablack.extra.timetable.view
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
-import com.juliablack.extra.timetable.util.Settings
 import com.juliablack.extra.timetable.controller.EventController
 import com.juliablack.extra.timetable.logic.genetic.GeneratorTimetable
 import com.juliablack.extra.timetable.logic.genetic.timetable.GroupTimetableForView
 import com.juliablack.extra.timetable.logic.genetic.timetable.Timetable
+import com.juliablack.extra.timetable.util.Settings
 import com.juliablack.extra.timetable.util.Util
 import javafx.application.Platform
 import javafx.scene.control.Alert
@@ -18,12 +18,7 @@ import javafx.scene.layout.BorderPane
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import tornadofx.*
-import java.time.LocalDate
-import java.time.Period
-
-class Person(val id: Int, val name: String, val birthday: LocalDate) {
-    val age: Int get() = Period.between(birthday, LocalDate.now()).years
-}
+import java.util.*
 
 class MainView : View() {
 
@@ -35,7 +30,6 @@ class MainView : View() {
 
     private var groupNumberField: TextField? = null
 
-
     private var borderPane: BorderPane = borderpane {
         center {
             imageView = imageview("/app/import_file.png") {
@@ -44,13 +38,6 @@ class MainView : View() {
             }
         }
     }
-
-    private val persons = observableList(
-            Person(1, "Samantha Stuart", LocalDate.of(1981, 12, 4)),
-            Person(2, "Tom Marks", LocalDate.of(2001, 1, 23)),
-            Person(3, "Stuart Gills", LocalDate.of(1989, 5, 23)),
-            Person(3, "Nicole Williams", LocalDate.of(1998, 8, 11))
-    )
 
     init {
         title = "ExtraTimeTable"
@@ -162,15 +149,22 @@ class MainView : View() {
                             var progress = 0L
 
                             val results = mutableListOf<Triple<Float, Float, Float>>()
+
                             for (i in 0 until Settings.count) {
                                 updateTitle("Генерация стартовой популяции")
+                                var timeStart = Date().time
                                 generatorTimeTable.generateStartPopulation(Settings.countOfPopulation) {
                                     updateProgress(progress++, allProgress)
                                 }
+                                var timeEnd = Date().time - timeStart
+                                Util.printTime("Generation population of ${Settings.countOfPopulation} individual", timeEnd)
+                                timeStart = Date().time
                                 updateTitle("Генерация расписания")
                                 generatorTimeTable.testExperiment {
                                     updateProgress(progress++, allProgress)
                                 }.subscribe {
+                                    timeEnd = Date().time - timeStart
+                                    Util.printTime("Algorithm of ${Settings.countCycle} cycles", timeEnd)
                                     val timetable = it.first
                                     results.add(it.second)
                                     generatorTimeTable.saveTimetable(timetable)

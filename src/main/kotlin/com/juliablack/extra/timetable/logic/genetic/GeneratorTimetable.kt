@@ -1,7 +1,6 @@
 package com.juliablack.extra.timetable.logic.genetic
 
 import com.google.gson.Gson
-import com.juliablack.extra.timetable.util.Settings
 import com.juliablack.extra.timetable.logic.db.Database
 import com.juliablack.extra.timetable.logic.db.DbContract
 import com.juliablack.extra.timetable.logic.genetic.common.GeneticAlgorithm
@@ -9,10 +8,7 @@ import com.juliablack.extra.timetable.logic.genetic.timetable.*
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.CrossoverType
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.MutationType
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
-import com.juliablack.extra.timetable.util.Util
-import com.juliablack.extra.timetable.util.containsIgnoreCase
-import com.juliablack.extra.timetable.util.findGroup
-import com.juliablack.extra.timetable.util.getColumn
+import com.juliablack.extra.timetable.util.*
 import io.reactivex.Observable
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.Workbook
@@ -26,6 +22,60 @@ class GeneratorTimetable(
         private val optionalLessonsOfDay: Int? = null,
         private val maxLessonsOfDay: Int? = null,
         private val file: File? = null) {
+
+    companion object {
+        private var rooms: MutableList<ClassRoom> = mutableListOf()
+        private var lessons: MutableList<Lesson> = mutableListOf()
+        private var groups: MutableList<Group> = mutableListOf()
+        private var teachers: MutableList<Teacher> = mutableListOf()
+        private var studentProgram: MutableList<GroupProgram> = mutableListOf()
+
+        fun generationTriple(lesson: Lesson, group: Group, individual: TimetableIndividual)
+                : Triple<StudentClass, Time, ClassRoom> {
+            val teacher = getTeacher(lesson)
+                    ?: throw Exception("Не найдено преподавателя для предмета ${lesson.name}")
+
+            val room = getRandomRoom(lesson)
+            val time = getRandomTime(individual, room, teacher, group)
+            return Triple(StudentClass(lesson, group, teacher), time, room)
+        }
+
+        private fun getTeacher(lesson: Lesson): Teacher? = teachers.find {
+            it.lessons.contains(lesson)
+        }
+
+        private fun getRandomRoom(lesson: Lesson): ClassRoom {
+            var room: ClassRoom
+            do {
+                room = rooms[Random().nextInt(rooms.size)]
+            } while (lesson.isNeedComputers && !room.hasComputers)
+            return room
+        }
+
+        private fun getRandomTime(timeTable: TimetableIndividual, room: ClassRoom, teacher: Teacher, group: Group): Time =
+                timeTable.getRandomFreeTime(room, teacher, group, groups)
+
+        /**
+         * Проверить, свободно ли время
+         */
+        private fun isTimeFree(timeTable: TimetableIndividual, time: Time, room: ClassRoom, group: Group): Boolean {
+            timeTable.getClasses().forEach { studentClass ->
+                //если в списке аудиторий уже есть такая
+                timeTable.getRooms().getIndexes(room).forEachIndexed { indexRoom, _ ->
+                    if (timeTable.getTimes().getGen(indexRoom) == time //если время совпадает, значит аудитория в это время занята
+                            && timeTable.getClasses()[indexRoom] != studentClass)
+                        return false
+                }
+            }
+            //Проверяем, есть ли в хромосоме времени это время с данной группой
+            timeTable.getTimes().getGenom().forEachIndexed { index, gene ->
+                if (gene == time &&
+                        timeTable.getClasses()[index].group == group)
+                    return false
+            }
+            return true
+        }
+    }
 
     private var geneticAlgorithm: GeneticAlgorithm
 
@@ -279,59 +329,5 @@ class GeneratorTimetable(
 
     private fun getRoomsFromDB() {
         Database.getRooms().toList().subscribe { it -> rooms = it }
-    }
-
-    companion object {
-        private var rooms: MutableList<ClassRoom> = mutableListOf()
-        private var lessons: MutableList<Lesson> = mutableListOf()
-        private var groups: MutableList<Group> = mutableListOf()
-        private var teachers: MutableList<Teacher> = mutableListOf()
-        private var studentProgram: MutableList<GroupProgram> = mutableListOf()
-
-        fun generationTriple(lesson: Lesson, group: Group, individual: TimetableIndividual)
-                : Triple<StudentClass, Time, ClassRoom> {
-            val teacher = getTeacher(lesson)
-                    ?: throw Exception("Не найдено преподавателя для предмета ${lesson.name}")
-
-            val room = getRandomRoom(lesson)
-            val time = getRandomTime(individual, room, teacher, group)
-            return Triple(StudentClass(lesson, group, teacher), time, room)
-        }
-
-        private fun getTeacher(lesson: Lesson): Teacher? = teachers.find {
-            it.lessons.contains(lesson)
-        }
-
-        private fun getRandomRoom(lesson: Lesson): ClassRoom {
-            var room: ClassRoom
-            do {
-                room = rooms[Random().nextInt(rooms.size)]
-            } while (lesson.isNeedComputers && !room.hasComputers)
-            return room
-        }
-
-        private fun getRandomTime(timeTable: TimetableIndividual, room: ClassRoom, teacher: Teacher, group: Group): Time =
-                timeTable.getRandomFreeTime(room, teacher, group, groups)
-
-        /**
-         * Проверить, свободно ли время
-         */
-        private fun isTimeFree(timeTable: TimetableIndividual, time: Time, room: ClassRoom, group: Group): Boolean {
-            timeTable.getClasses().forEach { studentClass ->
-                //если в списке аудиторий уже есть такая
-                timeTable.getRooms().getIndexes(room).forEachIndexed { indexRoom, _ ->
-                    if (timeTable.getTimes().getGen(indexRoom) == time //если время совпадает, значит аудитория в это время занята
-                            && timeTable.getClasses()[indexRoom] != studentClass)
-                        return false
-                }
-            }
-            //Проверяем, есть ли в хромосоме времени это время с данной группой
-            timeTable.getTimes().getGenom().forEachIndexed { index, gene ->
-                if (gene == time &&
-                        timeTable.getClasses()[index].group == group)
-                    return false
-            }
-            return true
-        }
     }
 }
