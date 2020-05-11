@@ -131,8 +131,6 @@ class TimetableIndividual : Individual {
                     if (Util.hasNearbyTime(this, time) && countInDay < maxLessonOfDay) {
                         freeTimesNearby.add(time)
                     }
-                } else {
-                    print("")
                 }
             }
         }
@@ -150,7 +148,7 @@ class TimetableIndividual : Individual {
         }
     }
 
-    fun getFullClasses(group: Group): List<StudentClassFull> {
+    fun getFullClasses(): List<StudentClassFull> {
         val list = mutableListOf<StudentClassFull>()
         getClasses().forEachIndexed { index, studentClass ->
             val studentClassFull = StudentClassFull(studentClass.lesson,
@@ -165,7 +163,6 @@ class TimetableIndividual : Individual {
 
     private fun getCountLessonsOfDay(group: Group, dayOfWeek: DayOfWeek): Int {
         var count = 0
-        //если в списке аудиторий уже есть такая
         getTimes().getGenom().forEachIndexed { index, gene ->
             try {
                 if (getClasses()[index].group == group) {

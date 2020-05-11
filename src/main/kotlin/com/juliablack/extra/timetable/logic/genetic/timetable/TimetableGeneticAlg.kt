@@ -86,10 +86,6 @@ class TimetableGeneticAlg : GeneticAlgorithm() {
                         teacher,
                         groups
                 )
-        if (!result) {
-            print("")
-        }
-
         return result
     }
 }

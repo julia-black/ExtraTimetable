@@ -2,7 +2,6 @@ package com.juliablack.extra.timetable.util
 
 import com.juliablack.extra.timetable.logic.genetic.timetable.*
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.TypeLesson
-import com.juliablack.extra.timetable.view.MainView
 
 object Util {
 
@@ -184,39 +183,13 @@ object Util {
 
     fun isTimeOnTeacherFree(timeTable: TimetableIndividual, time: Time, teacher: Teacher, groups: List<Group>): Boolean {
         groups.forEach { group ->
-            timeTable.getFullClasses(group).find {
+            timeTable.getFullClasses().find {
                 it.teacher == teacher && it.time == time
             }?.let {
                 return false
             }
         }
         return true
-    }
-
-    fun isErrorTime(list: List<DayClass>): Boolean {
-        if (list.isEmpty() || list[0].classes.isEmpty()) return false
-        var time = Time(list[0].dayOfWeek, list[0].classes[0].time)
-        list.forEach {
-            it.classes.forEachIndexed { idx, elem ->
-                if (idx > 0) {
-                    if (it.dayOfWeek == time.dayOfWeek && elem.time == time.numberClass) {
-                        return true
-                    } else {
-                        time = Time(list[0].dayOfWeek, list[0].classes[0].time)
-                    }
-                }
-            }
-        }
-        return false
-    }
-
-    fun isErrorTime(list: List<DayClass>, time: Time): Boolean {
-        list.find { it.dayOfWeek == time.dayOfWeek }?.classes?.forEach {
-            if (time.numberClass == it.time) {
-                return true
-            }
-        }
-        return false
     }
 
     fun printFitnessFunctions(population: MutableList<TimetableIndividual>) {

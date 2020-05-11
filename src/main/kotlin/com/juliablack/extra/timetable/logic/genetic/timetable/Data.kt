@@ -65,8 +65,7 @@ data class SimpleClass(var time: Int, //номер пары
 data class GroupTimetable(var group: Group,
                           var list: List<DayClass>)
 
-class GroupTimetableForView {
-    var time = ""
+class GroupTimetableForView(var time: String) {
     var monday = ""
     var tuesday = ""
     var wednesday = ""

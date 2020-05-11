@@ -1,6 +1,7 @@
 package com.juliablack.extra.timetable.logic.genetic.timetable
 
 import com.juliablack.extra.timetable.logic.genetic.timetable.enums.DayOfWeek
+import com.juliablack.extra.timetable.util.Settings
 import com.juliablack.extra.timetable.util.getTime
 import javafx.collections.ObservableList
 import tornadofx.*
@@ -61,30 +62,30 @@ class Timetable {
     fun parseTimetableToView(groupNumber: String?): Pair<ObservableList<GroupTimetableForView>?, String?> {
         this.timetable.find { it.group.number == groupNumber || groupNumber.isNullOrBlank()}?.apply {
             val timetableForView = observableList<GroupTimetableForView>()
+            for (i in 0..Settings.maxLessonsOfDay) {
+                timetableForView.add(GroupTimetableForView(i.getTime()))
+            }
             this.list.forEach { dayClass ->
                 dayClass.classes.forEachIndexed { index, simpleClass ->
-                    if (timetableForView.size <= index) {
-                        timetableForView.add(GroupTimetableForView())
-                    }
-                    timetableForView[index].time = index.getTime()
+                    val timeLesson = simpleClass.time
                     when (dayClass.dayOfWeek) {
                         DayOfWeek.MONDAY -> {
-                            timetableForView[index].monday = simpleClass.toString()
+                            timetableForView[timeLesson].monday = simpleClass.toString()
                         }
                         DayOfWeek.TUESDAY -> {
-                            timetableForView[index].tuesday = simpleClass.toString()
+                            timetableForView[timeLesson].tuesday = simpleClass.toString()
                         }
                         DayOfWeek.WEDNESDAY -> {
-                            timetableForView[index].wednesday = simpleClass.toString()
+                            timetableForView[timeLesson].wednesday = simpleClass.toString()
                         }
                         DayOfWeek.THURSDAY -> {
-                            timetableForView[index].thursday = simpleClass.toString()
+                            timetableForView[timeLesson].thursday = simpleClass.toString()
                         }
                         DayOfWeek.FRIDAY -> {
-                            timetableForView[index].friday = simpleClass.toString()
+                            timetableForView[timeLesson].friday = simpleClass.toString()
                         }
                         DayOfWeek.SATURDAY -> {
-                            timetableForView[index].saturday = simpleClass.toString()
+                            timetableForView[timeLesson].saturday = simpleClass.toString()
                         }
                     }
                 }

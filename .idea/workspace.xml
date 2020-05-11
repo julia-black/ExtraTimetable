@@ -6,16 +6,15 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2898d8e1-8f6f-48de-918a-6c3e024eb974" name="Default Changelist" comment="Added settings">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/util/GeneticAlgException.kt" afterDir="false" />
+    <list default="true" id="2898d8e1-8f6f-48de-918a-6c3e024eb974" name="Default Changelist" comment="Fixed bugs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/app/Settings.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/util/Settings.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/GeneratorTimetable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/GeneratorTimetable.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/common/GeneticAlgorithm.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/common/GeneticAlgorithm.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/Data.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/Data.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/Timetable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/Timetable.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/TimetableGeneticAlg.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/TimetableGeneticAlg.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/TimetableIndividual.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/TimetableIndividual.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/view/MainView.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/view/MainView.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/view/SettingsView.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/view/SettingsView.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/util/Settings.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/util/Settings.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/util/Util.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/util/Util.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -280,7 +279,7 @@
       <workItem from="1586203342368" duration="1255000" />
       <workItem from="1588682158075" duration="5501000" />
       <workItem from="1589108939790" duration="31512000" />
-      <workItem from="1589186788366" duration="2165000" />
+      <workItem from="1589186788366" duration="16642000" />
     </task>
     <task id="LOCAL-00001" summary="Connect to local SQLite DB, add mutation in genetic algorithm">
       <created>1558797215443</created>
@@ -401,7 +400,21 @@
       <option name="project" value="LOCAL" />
       <updated>1589142834193</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Fixed bugs">
+      <created>1589189128748</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1589189128748</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Refactored code">
+      <created>1589192625862</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1589192625862</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -431,14 +444,14 @@
     <MESSAGE value="Updated gradle &amp; kotlin plugin" />
     <MESSAGE value="Updated .gitignore" />
     <MESSAGE value="Added parsing Excel file" />
-    <MESSAGE value="Refactored code" />
     <MESSAGE value="Added parsing lessons from table" />
     <MESSAGE value="Added parsing groups from file" />
     <MESSAGE value="Added parsing groups program" />
     <MESSAGE value="Added settings" />
     <MESSAGE value="Added tableview with timetable" />
     <MESSAGE value="Fixed bugs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed bugs" />
+    <MESSAGE value="Refactored code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactored code" />
   </component>
   <component name="WindowStateProjectService">
     <state x="0" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1581760250371">
@@ -453,15 +466,15 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="548" y="65" key="#org.jetbrains.kotlin.idea.refactoring.move.moveDeclarations.ui.MoveKotlinTopLevelDeclarationsDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589188117423" />
-    <state x="-4" y="13" width="1397" height="811" key="CommitChangelistDialog2" timestamp="1589142833192">
+    <state x="-4" y="13" width="1397" height="811" key="CommitChangelistDialog2" timestamp="1589204142542">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="-4" y="13" key="CommitChangelistDialog2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589142833192" />
+    <state x="-4" y="13" key="CommitChangelistDialog2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589204142542" />
     <state x="-4" y="13" width="1397" height="811" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1581187521985" />
-    <state x="9" y="92" width="1498" height="695" key="DiffContextDialog" timestamp="1589142803825">
+    <state x="9" y="92" width="1450" height="694" key="DiffContextDialog" timestamp="1589204137372">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="9" y="92" key="DiffContextDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589142803825" />
+    <state x="9" y="92" width="1450" height="694" key="DiffContextDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589204137372" />
     <state x="9" y="92" width="1498" height="695" key="DiffContextDialog/0.0.1536.824@0.0.1536.824" timestamp="1581187520636" />
     <state x="549" y="170" key="FileChooserDialogImpl" timestamp="1589110021258">
       <screen x="0" y="0" width="1536" height="824" />
@@ -472,78 +485,78 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="0" y="0" key="FileDocumentManager.FileCacheConflict/0.0.1536.824@0.0.1536.824" timestamp="1588684616164" />
-    <state width="1493" height="183" key="GridCell.Tab.0.bottom" timestamp="1589189071286">
+    <state width="1493" height="252" key="GridCell.Tab.0.bottom" timestamp="1589202994257">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="183" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589189071286" />
+    <state width="1493" height="252" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589202994257" />
     <state width="1493" height="168" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1589146662559" />
-    <state width="1493" height="183" key="GridCell.Tab.0.center" timestamp="1589189071286">
+    <state width="1493" height="252" key="GridCell.Tab.0.center" timestamp="1589202994256">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="183" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589189071286" />
+    <state width="1493" height="252" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589202994256" />
     <state width="1493" height="168" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1589146662559" />
-    <state width="1493" height="183" key="GridCell.Tab.0.left" timestamp="1589189071286">
+    <state width="1493" height="252" key="GridCell.Tab.0.left" timestamp="1589202994256">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="183" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589189071286" />
+    <state width="1493" height="252" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589202994256" />
     <state width="1493" height="168" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1589146662559" />
-    <state width="1493" height="183" key="GridCell.Tab.0.right" timestamp="1589189071286">
+    <state width="1493" height="252" key="GridCell.Tab.0.right" timestamp="1589202994257">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="183" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589189071286" />
+    <state width="1493" height="252" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589202994257" />
     <state width="1493" height="168" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1589146662559" />
-    <state width="1493" height="152" key="GridCell.Tab.1.bottom" timestamp="1589188388597">
+    <state width="1493" height="252" key="GridCell.Tab.1.bottom" timestamp="1589202994257">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="152" key="GridCell.Tab.1.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589188388597" />
+    <state width="1493" height="252" key="GridCell.Tab.1.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589202994257" />
     <state width="1493" height="168" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1589146662559" />
-    <state width="1493" height="152" key="GridCell.Tab.1.center" timestamp="1589188388597">
+    <state width="1493" height="252" key="GridCell.Tab.1.center" timestamp="1589202994257">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="152" key="GridCell.Tab.1.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589188388597" />
+    <state width="1493" height="252" key="GridCell.Tab.1.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589202994257" />
     <state width="1493" height="168" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1589146662559" />
-    <state width="1493" height="152" key="GridCell.Tab.1.left" timestamp="1589188388596">
+    <state width="1493" height="252" key="GridCell.Tab.1.left" timestamp="1589202994257">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="152" key="GridCell.Tab.1.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589188388596" />
+    <state width="1493" height="252" key="GridCell.Tab.1.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589202994257" />
     <state width="1493" height="168" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1589146662559" />
-    <state width="1493" height="152" key="GridCell.Tab.1.right" timestamp="1589188388597">
+    <state width="1493" height="252" key="GridCell.Tab.1.right" timestamp="1589202994257">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="152" key="GridCell.Tab.1.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589188388597" />
+    <state width="1493" height="252" key="GridCell.Tab.1.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589202994257" />
     <state width="1493" height="168" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1589146662559" />
     <state width="189" height="457" key="HiddenNamespacesPopup" timestamp="1589110012433">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="189" height="457" key="HiddenNamespacesPopup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589110012433" />
     <state width="189" height="457" key="HiddenNamespacesPopup/0.0.1536.824@0.0.1536.824" timestamp="1581760205605" />
-    <state x="516" y="123" key="RollbackChangesDialog" timestamp="1589116214849">
+    <state x="516" y="123" key="RollbackChangesDialog" timestamp="1589197010543">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="516" y="123" key="RollbackChangesDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589116214849" />
-    <state x="277" y="0" key="SettingsEditor" timestamp="1589188524675">
+    <state x="516" y="123" key="RollbackChangesDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589197010543" />
+    <state x="277" y="0" key="SettingsEditor" timestamp="1589192676861">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="277" y="0" key="SettingsEditor/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589188524675" />
+    <state x="277" y="0" key="SettingsEditor/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589192676861" />
     <state x="277" y="55" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1588682174574" />
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1589142836192">
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1589192629709">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589142836192" />
-    <state width="775" height="419" key="XDebugger.FullValuePopup" timestamp="1589141452499">
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589192629709" />
+    <state width="775" height="419" key="XDebugger.FullValuePopup" timestamp="1589191932649">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="775" height="419" key="XDebugger.FullValuePopup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589141452499" />
+    <state width="775" height="419" key="XDebugger.FullValuePopup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589191932649" />
     <state width="775" height="419" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1583094783249" />
     <state x="470" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1589186790069">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="470" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589186790069" />
     <state x="470" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1586203356559" />
-    <state x="376" y="24" width="740" height="789" key="find.popup" timestamp="1589187078479">
+    <state x="612" y="35" width="740" height="789" key="find.popup" timestamp="1589202487029">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="376" y="24" width="740" height="789" key="find.popup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589187078479" />
+    <state x="612" y="35" width="740" height="789" key="find.popup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1589202487029" />
     <state x="376" y="24" width="740" height="789" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1583094560606" />
     <state x="425" y="187" key="run.anything.popup" timestamp="1589138987312">
       <screen x="0" y="0" width="1536" height="824" />
@@ -563,56 +576,42 @@
           <option name="timeStamp" value="89" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/util/Util.kt</url>
-          <line>212</line>
-          <option name="timeStamp" value="221" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/GeneratorTimetable.kt</url>
-          <line>91</line>
-          <properties>
-            <option name="lambda-ordinal" value="0" />
-          </properties>
-          <option name="timeStamp" value="260" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/common/GeneticAlgorithm.kt</url>
-          <line>42</line>
+          <line>48</line>
           <option name="timeStamp" value="281" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/common/GeneticAlgorithm.kt</url>
-          <line>29</line>
+          <line>35</line>
           <option name="timeStamp" value="282" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/TimetableIndividual.kt</url>
-          <line>177</line>
+          <line>144</line>
           <option name="timeStamp" value="306" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/view/MainView.kt</url>
-          <line>105</line>
+          <line>92</line>
           <option name="timeStamp" value="407" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/view/MainView.kt</url>
-          <line>107</line>
+          <line>94</line>
           <option name="timeStamp" value="408" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/view/MainView.kt</url>
-          <line>102</line>
+          <line>89</line>
           <option name="timeStamp" value="409" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/com/juliablack/extra/timetable/logic/genetic/timetable/Timetable.kt</url>
+          <line>69</line>
+          <option name="timeStamp" value="421" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="Remote">
-        <watch expression="groupNumberField" />
-        <watch expression="timetableForView.second " />
-      </configuration>
-    </watches-manager>
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />

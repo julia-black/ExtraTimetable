@@ -54,27 +54,6 @@ class GeneratorTimetable(
 
         private fun getRandomTime(timeTable: TimetableIndividual, room: ClassRoom, teacher: Teacher, group: Group): Time =
                 timeTable.getRandomFreeTime(room, teacher, group, groups)
-
-        /**
-         * Проверить, свободно ли время
-         */
-        private fun isTimeFree(timeTable: TimetableIndividual, time: Time, room: ClassRoom, group: Group): Boolean {
-            timeTable.getClasses().forEach { studentClass ->
-                //если в списке аудиторий уже есть такая
-                timeTable.getRooms().getIndexes(room).forEachIndexed { indexRoom, _ ->
-                    if (timeTable.getTimes().getGen(indexRoom) == time //если время совпадает, значит аудитория в это время занята
-                            && timeTable.getClasses()[indexRoom] != studentClass)
-                        return false
-                }
-            }
-            //Проверяем, есть ли в хромосоме времени это время с данной группой
-            timeTable.getTimes().getGenom().forEachIndexed { index, gene ->
-                if (gene == time &&
-                        timeTable.getClasses()[index].group == group)
-                    return false
-            }
-            return true
-        }
     }
 
     private var geneticAlgorithm: GeneticAlgorithm
@@ -136,31 +115,6 @@ class GeneratorTimetable(
         return Observable.just(Pair(Timetable(bestTimetable), Triple(mean, bestFitness, efficiency)))
     }
 
-    /**
-     * Генерация расписания (основной процесс)
-     */
-    fun generateTimetable(callback: () -> Unit): Observable<Timetable> {
-        var bestTimetable: TimetableIndividual? = null
-
-        var mean = 0f
-        for (i in 0 until Settings.countCycle) {
-            geneticAlgorithm.generationPopulation()
-            if (i == 0L) {
-                mean = geneticAlgorithm.getMeanFitnessFunction() //первоначальное среднее значение
-            }
-            geneticAlgorithm.crossover(CrossoverType.PANMIXIA)
-            geneticAlgorithm.mutation(MutationType.LARGE_MUTATION)
-            callback.invoke()
-        }
-
-        bestTimetable = geneticAlgorithm.getBestIndividual() as TimetableIndividual
-        val bestFitness = bestTimetable.calculateFitnessFunction().toFloat()
-        val efficiency = getEfficiency(mean, bestFitness)
-        println("Mean of first population: $mean, Best: $bestFitness, Efficiency: $efficiency%")
-
-        return Observable.just(Timetable(bestTimetable!!))
-    }
-
     fun saveTimetable(timeTable: Timetable) {
         val jsonTimetable = Gson().toJson(timeTable)
         PrintWriter("timetable.json", "UTF-8").use { file ->
@@ -173,7 +127,8 @@ class GeneratorTimetable(
         return 100 - result
     }
 
-    private fun downloadTimetableFromDB() {
+    @Deprecated("This function is out of date. Use download from Excel")
+    fun downloadTimetableFromDB() {
         Database.getGroups().toList().subscribe { it -> groups = it }
         Database.getLessons().toList().subscribe { it -> lessons = it }
         Database.getTeachers().subscribe { res ->
