@@ -147,27 +147,6 @@ object Util {
     }
 
     /**
-     * Проверить, свободно ли время
-     */
-    fun isTimeFree(timeTable: TimetableIndividual, time: Time, room: ClassRoom, group: Group): Boolean {
-        timeTable.getClasses().forEach { studentClass ->
-            //если в списке аудиторий уже есть такая
-            timeTable.getRooms().getIndexes(room).forEachIndexed { indexRoom, _ ->
-                if (timeTable.getTimes().getGen(indexRoom) == time //если время совпадает, значит аудитория в это время занята
-                        && timeTable.getClasses()[indexRoom] != studentClass)
-                    return false
-            }
-        }
-        //Проверяем, есть ли в хромосоме времени это время с данной группой
-        timeTable.getTimes().getGenom().forEachIndexed { index, gene ->
-            if (gene == time &&
-                    timeTable.getClasses()[index].group == group)
-                return false
-        }
-        return true
-    }
-
-    /**
      * Проверка имеет ли пара уже созданные соседние пары
      */
     fun hasNearbyTime(timeTable: TimetableIndividual, time: Time): Boolean {
@@ -181,13 +160,22 @@ object Util {
         return false
     }
 
-    fun isTimeOnTeacherFree(timeTable: TimetableIndividual, time: Time, teacher: Teacher, groups: List<Group>): Boolean {
-        groups.forEach { group ->
-            timeTable.getFullClasses().find {
-                it.teacher == teacher && it.time == time
-            }?.let {
-                return false
+    fun isTimeFreeForGroupAndTeacher(timeTable: TimetableIndividual, time: Time, room: ClassRoom, group: Group,
+                                     teacher: Teacher): Boolean {
+        timeTable.getClasses().forEachIndexed { index, studentClass ->
+            //если в списке аудиторий уже есть такая
+            timeTable.getRooms().getIndexes(room).forEachIndexed { indexRoom, _ ->
+                if (timeTable.getTimes().getGen(indexRoom) == time //если время совпадает, значит аудитория в это время занята
+                        && timeTable.getClasses()[indexRoom] != studentClass)
+                    return false
             }
+        }
+        //Проверяем, есть ли в хромосоме времени это время с данной группой или с этим преподавателем
+        timeTable.getTimes().getGenom().forEachIndexed { index, gene ->
+            if (gene == time &&
+                    (timeTable.getClasses()[index].group == group
+                            || timeTable.getClasses()[index].teacher == teacher))
+                return false
         }
         return true
     }

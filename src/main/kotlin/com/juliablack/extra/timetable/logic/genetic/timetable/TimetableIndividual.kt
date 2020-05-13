@@ -124,8 +124,7 @@ class TimetableIndividual : Individual {
         DayOfWeek.values().forEach { day ->
             for (i in 0..maxLessonOfDay) {
                 val time = Time(day, i)
-                if (Util.isTimeFree(this, time, room, group)
-                        && Util.isTimeOnTeacherFree(this, time, teacher, groups)) {
+                if (Util.isTimeFreeForGroupAndTeacher(this, time, room, group, teacher)) {
                     freeTimes.add(time)
                     val countInDay = this.getCountLessonsOfDay(group, day)
                     if (Util.hasNearbyTime(this, time) && countInDay < maxLessonOfDay) {

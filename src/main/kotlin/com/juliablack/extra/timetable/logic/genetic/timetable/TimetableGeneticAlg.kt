@@ -33,7 +33,7 @@ class TimetableGeneticAlg : GeneticAlgorithm() {
     }
 
 
-    override fun getMeanFitnessFunction() : Float {
+    override fun getMeanFitnessFunction(): Float {
         val sum = population.sumBy { it.fitnessFunction!! }
         return sum.toFloat() / population.size.toFloat()
     }
@@ -47,11 +47,9 @@ class TimetableGeneticAlg : GeneticAlgorithm() {
         val possibleLocuses = mutableListOf<Int>()
         val individual1 = population[idxIndividual1]
         val individual2 = population[idxIndividual2]
-        val groups = individual1.groups!!
 
         individual1.getTimes().getGenom().forEachIndexed { index, timeGene ->
             if (isPossibleCrossover(
-                            groups,
                             individual1,
                             individual2,
                             individual1.getClasses()[index].teacher,
@@ -63,29 +61,20 @@ class TimetableGeneticAlg : GeneticAlgorithm() {
         return possibleLocuses
     }
 
-    private fun isPossibleCrossover(groups: List<Group>, individual1: TimetableIndividual, individual2: TimetableIndividual,
+    private fun isPossibleCrossover(individual1: TimetableIndividual, individual2: TimetableIndividual,
                                     teacher: Teacher, group: Group, locus: Int): Boolean {
-        val result = Util.isTimeFree(
+
+        return Util.isTimeFreeForGroupAndTeacher(
                 individual1,
                 individual2.getTimes().getGen(locus) as Time,
                 individual2.getRooms().getGen(locus) as ClassRoom,
-                group) &&
-                Util.isTimeOnTeacherFree(
-                        individual1,
-                        individual2.getTimes().getGen(locus) as Time,
-                        teacher,
-                        groups) &&
-                Util.isTimeFree(
+                group,
+                teacher) && //если время из 2 особи свободно в 1 особи для группы и преподавателя
+                Util.isTimeFreeForGroupAndTeacher(
                         individual2,
                         individual1.getTimes().getGen(locus) as Time,
                         individual1.getRooms().getGen(locus) as ClassRoom,
-                        group) &&
-                Util.isTimeOnTeacherFree(
-                        individual2,
-                        individual1.getTimes().getGen(locus) as Time,
-                        teacher,
-                        groups
-                )
-        return result
+                        group,
+                        teacher)
     }
 }
