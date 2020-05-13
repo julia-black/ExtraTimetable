@@ -1,8 +1,8 @@
-package com.juliablack.extra.timetable.app
+package com.juliablack.extra.timetable
 
 import com.juliablack.extra.timetable.view.MainView
+import com.juliablack.extra.timetable.view.Styles
 import javafx.scene.image.Image
-import javafx.stage.Stage
 import tornadofx.*
 
 class MyApp : App(MainView::class, Styles::class) {

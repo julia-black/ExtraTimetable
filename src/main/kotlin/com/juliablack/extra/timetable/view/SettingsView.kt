@@ -1,7 +1,6 @@
 package com.juliablack.extra.timetable.view
 
 import com.juliablack.extra.timetable.util.Settings
-import com.juliablack.extra.timetable.app.Styles
 import javafx.scene.control.CheckBox
 import javafx.scene.control.TextField
 import tornadofx.*

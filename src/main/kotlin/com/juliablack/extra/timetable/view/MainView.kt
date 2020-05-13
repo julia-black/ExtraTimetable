@@ -50,14 +50,12 @@ class MainView : View() {
             setPrefSize(940.0, 610.0)
             top {
                 this += menubar {
-                    menu("Импорт") {
+                    menu("Сгенерировать расписание") {
                         item("Из Excel-файла").apply {
                             actionEvents()
                                     .map { Unit }
                                     .subscribe(controller.showViewOpenFile)
                         }
-                    }
-                    menu("Сгенерировать") {
                         item("Из внутренней базы данных").apply {
                             actionEvents()
                                     .map { Unit }

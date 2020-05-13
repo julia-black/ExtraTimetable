@@ -1,4 +1,4 @@
-package com.juliablack.extra.timetable.app
+package com.juliablack.extra.timetable.view
 
 import tornadofx.*
 

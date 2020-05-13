@@ -80,7 +80,7 @@ abstract class GeneticAlgorithm {
 
     fun mutation(type: MutationType) {
         when (type) {
-            MutationType.POINT_MUTATION -> {
+            MutationType.POINT_MUTATION -> { //точечная мутация
                 val idx = Random.nextInt(0, getPopulation().size - 1)
                 getPopulation()[idx].mutation()
             }
